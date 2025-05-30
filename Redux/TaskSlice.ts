@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { v4 as uuidv4 } from 'uuid';
+import uuid from 'react-native-uuid'; 
 
 interface Task {
   id: string;
@@ -21,7 +21,7 @@ const taskSlice = createSlice({
   initialState,
   reducers: {
     addTask: (state, action: PayloadAction<Omit<Task, 'id'>>) => {
-      const newTask = { ...action.payload, id: uuidv4() };
+      const newTask = { ...action.payload, id: uuid.v4() as string }; 
       state.value.push(newTask);
     },
     updateTask: (state, action: PayloadAction<Task>) => {
