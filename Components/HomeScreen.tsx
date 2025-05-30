@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../Redux/store';
 import { updateTask } from '../Redux/TaskSlice';
@@ -32,6 +33,19 @@ const HomeScreen = () => {
     setModalVisible(false);
   };
 
+  const getStatusColor = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'pending':
+        return '#ffcccc';
+      case 'in progress':
+        return '#fff3cd';
+      case 'done':
+        return '#d4edda';
+      default:
+        return '#ffffff';
+    }
+  };
+
   return (
     <View style={styles.container}>
       <TextInput
@@ -46,7 +60,7 @@ const HomeScreen = () => {
         keyExtractor={item => item.id.toString()}
         renderItem={({ item }) => (
           <TouchableOpacity
-            style={styles.taskItem}
+            style={[styles.taskItem, { backgroundColor: getStatusColor(item.status) }]}
             onPress={() => {
               setSelectedTask(item);
               setModalVisible(true);
@@ -83,14 +97,20 @@ const HomeScreen = () => {
               setSelectedTask({ ...selectedTask, description: text })
             }
           />
-          <TextInput
-            style={styles.input}
-            placeholder="Status"
-            value={selectedTask?.status}
-            onChangeText={text =>
-              setSelectedTask({ ...selectedTask, status: text })
-            }
-          />
+
+          <View style={styles.pickerWrapper}>
+            <Picker
+              selectedValue={selectedTask?.status}
+              onValueChange={(value) =>
+                setSelectedTask({ ...selectedTask, status: value })
+              }
+            >
+              <Picker.Item label="Pending" value="pending" />
+              <Picker.Item label="In Progress" value="in progress" />
+              <Picker.Item label="Done" value="done" />
+            </Picker>
+          </View>
+
           <TouchableOpacity style={styles.saveButton} onPress={handleUpdate}>
             <Text style={styles.saveButtonText}>Save</Text>
           </TouchableOpacity>
@@ -114,7 +134,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   taskItem: {
-    backgroundColor: '#fff',
     padding: 15,
     borderRadius: 10,
     marginBottom: 10,
@@ -130,7 +149,8 @@ const styles = StyleSheet.create({
   },
   taskStatus: {
     fontSize: 14,
-    color: '#999',
+    color: '#555',
+    marginTop: 4,
   },
   addButton: {
     position: 'absolute',
@@ -165,6 +185,11 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 15,
     fontSize: 16,
+  },
+  pickerWrapper: {
+    backgroundColor: '#f0f0f0',
+    borderRadius: 8,
+    marginBottom: 15,
   },
   saveButton: {
     backgroundColor: '#28a745',

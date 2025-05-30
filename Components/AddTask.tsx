@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import { useDispatch } from 'react-redux';
 import { addTask } from '../Redux/TaskSlice';
 import { useNavigation } from '@react-navigation/native';
@@ -7,7 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 const AddTask = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [status, setStatus] = useState('');
+  const [status, setStatus] = useState('pending'); 
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
@@ -32,12 +33,17 @@ const AddTask = () => {
         value={description}
         onChangeText={setDescription}
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Status"
-        value={status}
-        onChangeText={setStatus}
-      />
+      <View style={styles.pickerContainer}>
+        <Picker
+          selectedValue={status}
+          onValueChange={(itemValue) => setStatus(itemValue)}
+          style={styles.picker}
+        >
+          <Picker.Item label="Pending" value="pending" />
+          <Picker.Item label="In Progress" value="in progress" />
+          <Picker.Item label="Done" value="done" />
+        </Picker>
+      </View>
       <TouchableOpacity style={styles.addButton} onPress={handleAdd}>
         <Text style={styles.addButtonText}>Add Task</Text>
       </TouchableOpacity>
@@ -57,6 +63,15 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 15,
     fontSize: 16,
+  },
+  pickerContainer: {
+    backgroundColor: '#f0f0f0',
+    borderRadius: 8,
+    marginBottom: 15,
+  },
+  picker: {
+    height: 50,
+    width: '100%',
   },
   addButton: {
     backgroundColor: '#007bff',
