@@ -1,0 +1,83 @@
+import React from 'react';
+import { Modal, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+
+interface WarningModalProps {
+  visible: boolean;
+  message: string;
+  onClose: () => void;
+  onConfirm?: () => void; 
+}
+
+const WarningModal: React.FC<WarningModalProps> = ({ visible, message, onClose, onConfirm }) => {
+  return (
+    <Modal visible={visible} transparent animationType="fade">
+      <View style={styles.overlay}>
+        <View style={styles.modalContainer}>
+          <Text style={styles.message}>{message}</Text>
+
+          {onConfirm ? (
+            <View style={styles.buttonRow}>
+              <TouchableOpacity onPress={onConfirm} style={[styles.button, styles.confirm]}>
+                <Text style={styles.buttonText}>Yes</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={onClose} style={[styles.button, styles.cancel]}>
+                <Text style={styles.buttonText}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <TouchableOpacity onPress={onClose} style={[styles.button, styles.confirm]}>
+  <Text style={styles.buttonText}>OK</Text>
+</TouchableOpacity>
+          )}
+        </View>
+      </View>
+    </Modal>
+  );
+};
+
+const styles = StyleSheet.create({
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContainer: {
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 10,
+    width: '80%',
+    alignItems: 'center',
+    elevation: 5,
+  },
+  message: {
+    fontSize: 16,
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+  },
+  button: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 6,
+    minWidth: 100,
+    alignItems: 'center',
+    marginHorizontal: 5,
+  },
+  confirm: {
+    backgroundColor: '#007bff',
+  },
+  cancel: {
+    backgroundColor: '#6c757d',
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+});
+
+export default WarningModal;

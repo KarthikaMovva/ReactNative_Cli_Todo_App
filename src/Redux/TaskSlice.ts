@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import uuid from 'react-native-uuid'; 
+import { generateUniqueId } from '../Utilities/generateId';
 
 interface Task {
   id: string;
@@ -21,14 +21,16 @@ const taskSlice = createSlice({
   initialState,
   reducers: {
     addTask: (state, action: PayloadAction<Omit<Task, 'id'>>) => {
-      const newTask = { ...action.payload, id: uuid.v4() as string }; 
+      const newTask = { ...action.payload, id: generateUniqueId() };
       state.value.push(newTask);
     },
     updateTask: (state, action: PayloadAction<Task>) => {
       const index = state.value.findIndex(task => task.id === action.payload.id);
       if (index !== -1) {
         state.value[index] = action.payload;
-      }
+      } else {
+    console.warn(`Task with id ${action.payload.id} not found.`);
+  }
     },
   },
 });

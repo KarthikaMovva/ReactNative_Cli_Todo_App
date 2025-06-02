@@ -4,8 +4,8 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { store, persistor } from './Redux/store';
-import HomeScreen from './Components/HomeScreen';
-import AddTask from './Components/AddTask';
+import HomeScreen from './Screens/HomeScreen';
+import AddTask from './Screens/AddTaskScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 

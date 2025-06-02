@@ -2,74 +2,96 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
-  TextInput,
-  FlatList,
   Modal,
+  TextInput,
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
+import StatusPicker from '../Components/StatusPicker';
+import WarningModal from '../Components/WarningModal';
+import SearchBar from '../Components/SearchBar';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../Redux/store';
 import { updateTask } from '../Redux/TaskSlice';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../App';
+import { Task } from '../Type/types';
+import TaskList from '../Components/TaskList';
 
-const HomeScreen = () => {
+const HomeScreen: React.FC = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const tasks = useSelector((state: RootState) => state.tasks.value);
   const dispatch = useDispatch();
   const [search, setSearch] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectedTask, setSelectedTask] = useState<any>(null);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [showUnchangedConfirm, setShowUnchangedConfirm] = useState(false);
+  const [originalTask, setOriginalTask] = useState<null | Task>(null);
+  const [selectedTask, setSelectedTask] = useState<null | Task>(null);
+
 
   const filteredTasks = tasks.filter(task =>
     task.title.toLowerCase().includes(search.toLowerCase())
   );
+const handleUpdate = () => {
+  if (!selectedTask || !originalTask) return;
 
-  const handleUpdate = () => {
-    dispatch(updateTask(selectedTask));
-    setModalVisible(false);
-  };
+  const isUnchanged =
+    selectedTask.title === originalTask.title &&
+    selectedTask.description === originalTask.description &&
+    selectedTask.status === originalTask.status;
 
-  const getStatusColor = (status: string) => {
-    switch (status.toLowerCase()) {
-      case 'pending':
-        return '#ffcccc';
-      case 'in progress':
-        return '#fff3cd';
-      case 'done':
-        return '#d4edda';
-      default:
-        return '#ffffff';
-    }
-  };
+  if (isUnchanged) {
+    setShowUnchangedConfirm(true); 
+    return;
+  }
+
+  const taskExists = tasks.some(task => task.id === selectedTask.id);
+  if (!taskExists) {
+    setErrorMessage('Task not found. The ID did not match');
+    setShowErrorModal(true);
+    return;
+  }
+
+  dispatch(updateTask(selectedTask));
+  setModalVisible(false);
+};
+
+
 
   return (
     <View style={styles.container}>
-      <TextInput
-        style={styles.searchBar}
-        placeholder="Search tasks..."
-        value={search}
-        onChangeText={setSearch}
-      />
+<WarningModal
+  visible={showUnchangedConfirm}
+  message="No changes made. Do you still want to update the task?"
+  onClose={() => setShowUnchangedConfirm(false)}
+  onConfirm={() => {
+    dispatch(updateTask(selectedTask!));
+    setShowUnchangedConfirm(false);
+    setModalVisible(false);
+  }}
+/>
+<WarningModal
+  visible={showErrorModal}
+  message={errorMessage}
+  onClose={() => setShowErrorModal(false)}
+  onConfirm={() => setShowErrorModal(false)}
+/>
 
-      <FlatList
-        data={filteredTasks}
-        keyExtractor={item => item.id.toString()}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={[styles.taskItem, { backgroundColor: getStatusColor(item.status) }]}
-            onPress={() => {
-              setSelectedTask(item);
-              setModalVisible(true);
-            }}
-          >
-            <Text style={styles.taskTitle}>{item.title}</Text>
-            <Text style={styles.taskStatus}>{item.status}</Text>
-          </TouchableOpacity>
-        )}
+
+      <SearchBar value={search} onChangeText={setSearch} placeholder="Search tasks..." />
+      <TaskList
+        tasks={filteredTasks}
+        onTaskPress={(task) => {
+          console.log('modalVisible1', modalVisible);
+          setSelectedTask({ ...task });
+          setOriginalTask({ ...task });
+          setModalVisible(true);
+          console.log('modalVisible2', modalVisible);
+
+        }}
       />
 
       <TouchableOpacity
@@ -84,32 +106,26 @@ const HomeScreen = () => {
           <TextInput
             style={styles.input}
             placeholder="Title"
-            value={selectedTask?.title}
+            value={selectedTask?.title || ''}
             onChangeText={text =>
-              setSelectedTask({ ...selectedTask, title: text })
+              setSelectedTask(prev => prev ? { ...prev, title: text } : null)
             }
           />
           <TextInput
             style={styles.input}
             placeholder="Description"
-            value={selectedTask?.description}
+            value={selectedTask?.description || ''}
             onChangeText={text =>
-              setSelectedTask({ ...selectedTask, description: text })
+              setSelectedTask(prev => prev ? { ...prev, description: text } : null)
             }
           />
 
-          <View style={styles.pickerWrapper}>
-            <Picker
-              selectedValue={selectedTask?.status}
-              onValueChange={(value) =>
-                setSelectedTask({ ...selectedTask, status: value })
-              }
-            >
-              <Picker.Item label="Pending" value="pending" />
-              <Picker.Item label="In Progress" value="in progress" />
-              <Picker.Item label="Done" value="done" />
-            </Picker>
-          </View>
+          <StatusPicker
+            selectedValue={selectedTask?.status || ''}
+            onValueChange={(value) =>
+              setSelectedTask(prev => prev ? { ...prev, status: value } : null)
+            }
+          />
 
           <TouchableOpacity style={styles.saveButton} onPress={handleUpdate}>
             <Text style={styles.saveButtonText}>Save</Text>
@@ -125,32 +141,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: '#f5f5f5',
-  },
-  searchBar: {
-    backgroundColor: '#fff',
-    padding: 10,
-    borderRadius: 10,
-    marginBottom: 10,
-    fontSize: 16,
-  },
-  taskItem: {
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 10,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  taskTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-  },
-  taskStatus: {
-    fontSize: 14,
-    color: '#555',
-    marginTop: 4,
   },
   addButton: {
     position: 'absolute',
@@ -185,11 +175,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 15,
     fontSize: 16,
-  },
-  pickerWrapper: {
-    backgroundColor: '#f0f0f0',
-    borderRadius: 8,
-    marginBottom: 15,
   },
   saveButton: {
     backgroundColor: '#28a745',
