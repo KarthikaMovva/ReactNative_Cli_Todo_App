@@ -1,11 +1,12 @@
 import React from 'react';
 import { Modal, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import Colors from '../Utilities/Colors';
 
 interface WarningModalProps {
   visible: boolean;
   message: string;
   onClose: () => void;
-  onConfirm?: () => void; 
+  onConfirm?: () => void;
 }
 
 const WarningModal: React.FC<WarningModalProps> = ({ visible, message, onClose, onConfirm }) => {
@@ -26,8 +27,8 @@ const WarningModal: React.FC<WarningModalProps> = ({ visible, message, onClose, 
             </View>
           ) : (
             <TouchableOpacity onPress={onClose} style={[styles.button, styles.confirm]}>
-  <Text style={styles.buttonText}>OK</Text>
-</TouchableOpacity>
+              <Text style={styles.buttonText}>OK</Text>
+            </TouchableOpacity>
           )}
         </View>
       </View>
@@ -38,22 +39,27 @@ const WarningModal: React.FC<WarningModalProps> = ({ visible, message, onClose, 
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.3)',
+    backgroundColor: Colors.modalOverlay,
     justifyContent: 'center',
     alignItems: 'center',
   },
   modalContainer: {
-    backgroundColor: '#fff',
+    backgroundColor: Colors.background,
     padding: 20,
     borderRadius: 10,
     width: '80%',
     alignItems: 'center',
     elevation: 5,
+    shadowColor: Colors.darkText,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
   message: {
     fontSize: 16,
     marginBottom: 20,
     textAlign: 'center',
+    color: Colors.darkText,
   },
   buttonRow: {
     flexDirection: 'row',
@@ -69,13 +75,13 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   confirm: {
-    backgroundColor: '#007bff',
+    backgroundColor: Colors.primaryButton,
   },
   cancel: {
-    backgroundColor: '#6c757d',
+    backgroundColor: Colors.cancelButton,
   },
   buttonText: {
-    color: '#fff',
+    color: Colors.primaryButtonText,
     fontWeight: 'bold',
   },
 });

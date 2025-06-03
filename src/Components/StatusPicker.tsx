@@ -8,13 +8,13 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
 } from 'react-native';
+import Colors from '../Utilities/Colors';
+import { STATUS_OPTIONS } from '../Utilities/Constants';
 
 interface Props {
   selectedValue: string;
   onValueChange: (value: string) => void;
 }
-
-const STATUS_OPTIONS = ['pending', 'in progress', 'done'];
 
 const StatusPicker: React.FC<Props> = ({ selectedValue, onValueChange }) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -24,11 +24,19 @@ const StatusPicker: React.FC<Props> = ({ selectedValue, onValueChange }) => {
     setModalVisible(false);
   };
 
+  const openModal = () => {
+    setModalVisible(true);
+  }
+
+  const closeModal = () => {
+    setModalVisible(false);
+  }
+
   return (
     <View>
       <TouchableOpacity
         style={styles.pickerButton}
-        onPress={() => setModalVisible(true)}
+        onPress={openModal}
       >
         <Text style={styles.pickerButtonText}>{selectedValue || 'Select status'}</Text>
       </TouchableOpacity>
@@ -37,9 +45,9 @@ const StatusPicker: React.FC<Props> = ({ selectedValue, onValueChange }) => {
         visible={modalVisible}
         transparent
         animationType="fade"
-        onRequestClose={() => setModalVisible(false)}
+        onRequestClose={closeModal}
       >
-        <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+        <TouchableWithoutFeedback onPress={closeModal}>
           <View style={styles.modalOverlay}>
             <TouchableWithoutFeedback>
               <View style={styles.modalContent}>
@@ -66,23 +74,23 @@ const StatusPicker: React.FC<Props> = ({ selectedValue, onValueChange }) => {
 
 const styles = StyleSheet.create({
   pickerButton: {
-    backgroundColor: '#f0f0f0',
+    backgroundColor: Colors.lightGray,
     padding: 12,
     borderRadius: 8,
     marginBottom: 15,
   },
   pickerButtonText: {
     fontSize: 16,
-    color: '#333',
+    color: Colors.darkText,
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.4)',
+    backgroundColor: Colors.modalOverlay,
     justifyContent: 'center',
     alignItems: 'center',
   },
   modalContent: {
-    backgroundColor: '#fff',
+    backgroundColor: Colors.background,
     borderRadius: 10,
     width: '80%',
     paddingVertical: 10,
@@ -91,11 +99,11 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 20,
     borderBottomWidth: 1,
-    borderColor: '#eee',
+    borderColor: Colors.inputBorder,
   },
   optionText: {
     fontSize: 16,
-    color: '#333',
+    color: Colors.darkText,
   },
 });
 

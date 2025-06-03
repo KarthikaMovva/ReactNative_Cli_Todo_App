@@ -1,5 +1,6 @@
 import React from 'react';
 import { TextInput, StyleSheet, View } from 'react-native';
+import Colors from '../Utilities/Colors';
 
 interface SearchBarProps {
   value: string;
@@ -15,6 +16,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ value, onChangeText, placeholder 
         placeholder={placeholder}
         value={value}
         onChangeText={onChangeText}
+        placeholderTextColor={Colors.mediumText}
       />
     </View>
   );
@@ -25,10 +27,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   input: {
-    backgroundColor: '#fff',
+    backgroundColor: Colors.background,
     padding: 10,
     borderRadius: 10,
     fontSize: 16,
+    color: Colors.darkText,
   },
 });
 
