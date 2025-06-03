@@ -1,12 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { generateUniqueId } from '../Utilities/generateId';
+import { Task } from '../Type/types'; 
 
-interface Task {
-  id: string;
-  title: string;
-  description: string;
-  status: string;
-}
 
 interface TaskState {
   value: Task[];
@@ -27,13 +22,20 @@ const taskSlice = createSlice({
     updateTask: (state, action: PayloadAction<Task>) => {
       const index = state.value.findIndex(task => task.id === action.payload.id);
       if (index !== -1) {
+        if (state.value[index].userEmail === action.payload.userEmail) {
         state.value[index] = action.payload;
+        } else {
+          console.warn("Unauthorized to update this task.");
+        }
       } else {
-    console.warn(`Task with id ${action.payload.id} not found.`);
-  }
+        console.warn(`Task with id ${action.payload.id} not found.`);
+      }
+    },
+    deleteTask: (state, action: PayloadAction<string>) => {
+      state.value = state.value.filter(task => task.id !== action.payload);
     },
   },
 });
 
-export const { addTask, updateTask } = taskSlice.actions;
+export const { addTask, updateTask, deleteTask } = taskSlice.actions;
 export default taskSlice.reducer;
