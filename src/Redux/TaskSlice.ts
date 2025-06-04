@@ -24,11 +24,7 @@ const taskSlice = createSlice({
       if (index !== -1) {
         if (state.value[index].userEmail === action.payload.userEmail) {
         state.value[index] = action.payload;
-        } else {
-          console.warn("Unauthorized to update this task.");
         }
-      } else {
-        console.warn(`Task with id ${action.payload.id} not found.`);
       }
     },
     deleteTask: (state, action: PayloadAction<string>) => {

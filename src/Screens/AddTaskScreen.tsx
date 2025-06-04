@@ -21,7 +21,7 @@ const AddTaskScreen = () => {
 
   const handleAdd = () => {
     if (title.trim() && currentUserEmail) {
-      dispatch(addTask({ title, description, status, userEmail: currentUserEmail }));
+      dispatch(addTask({ title, description: description.trim() ? description : 'No description', status, userEmail: currentUserEmail }));
       navigation.goBack();
     } else {
       setWarningVisible(true);
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   addButtonText: {
-    color: Colors.primaryButtonText,
+    color: Colors.background,
     fontSize: 16,
     fontWeight: 'bold',
   },
