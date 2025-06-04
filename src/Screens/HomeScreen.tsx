@@ -1,30 +1,31 @@
-import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  Modal,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-} from 'react-native';
-import StatusPicker from '../Components/StatusPicker';
-import WarningModal from '../Components/WarningModal';
-import SearchBar from '../Components/SearchBar';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
 import { RootState } from '../Redux/store';
 import { updateTask, deleteTask } from '../Redux/TaskSlice';
-import { useNavigation } from '@react-navigation/native';
-import Colors from '../Utilities/Colors';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../App';
 import { Task } from '../Type/types';
 import { useAuth } from '../Auth/authContext';
+import Colors from '../Utilities/Colors';
+
+import SearchBar from '../Components/SearchBar';
 import TaskList from '../Components/TaskList';
+import WarningModal from '../Components/WarningModal';
+import Pagination from '../Components/Pagination';
+import EditTaskModal from '../Components/EditTaskModal';
+
+const TASKS_PER_PAGE = 7;
 
 const HomeScreen: React.FC = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const allTasks = useSelector((state: RootState) => state.tasks.value);
   const dispatch = useDispatch();
+
+  const { setIsLoggedIn, currentUserEmail } = useAuth();
+
   const [search, setSearch] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
@@ -34,13 +35,43 @@ const HomeScreen: React.FC = () => {
   const [selectedTask, setSelectedTask] = useState<null | Task>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState<null | Task>(null);
-  const { setIsLoggedIn, currentUserEmail } = useAuth();
+  const [currentPage, setCurrentPage] = useState(1);
 
   const userTasks = allTasks.filter(task => task.userEmail === currentUserEmail);
-
   const filteredTasks = userTasks.filter(task =>
     task.title.toLowerCase().includes(search.toLowerCase())
   );
+
+  useEffect(() => {
+  const newTotalPages = Math.ceil(filteredTasks.length / TASKS_PER_PAGE);
+  if (currentPage > newTotalPages && newTotalPages > 0) {
+    setCurrentPage(newTotalPages);
+  } else if (newTotalPages === 0) {
+    setCurrentPage(1);
+  }
+}, [filteredTasks.length, currentPage]);
+
+  const totalPages = Math.ceil(filteredTasks.length / TASKS_PER_PAGE);
+
+  const paginatedTasks = filteredTasks.slice(
+    (currentPage - 1) * TASKS_PER_PAGE,
+    currentPage * TASKS_PER_PAGE
+  );
+
+  const goToPage = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  const handleTaskList = (task: Task) => {
+    setSelectedTask({ ...task });
+    setOriginalTask({ ...task });
+    setModalVisible(true);
+  };
+
+
+
 
   const handleUpdate = () => {
     if (!selectedTask || !originalTask) return;
@@ -66,29 +97,6 @@ const HomeScreen: React.FC = () => {
     setModalVisible(false);
   };
 
-  const handleClose = () => {
-    setShowUnchangedConfirm(false)
-  };
-
-  const errHandleClose = () => {
-    setShowErrorModal(false);
-  }
-
-  const errHandleConfrim = () => {
-    setShowErrorModal(false);
-  }
-
-  const handleTaskList = (task: Task) => {
-    setSelectedTask({ ...task });
-    setOriginalTask({ ...task });
-    setModalVisible(true);
-  }
-
-  const handleDeletePress = (task: Task) => {
-    setTaskToDelete(task);
-    setShowDeleteConfirm(true);
-  };
-
   const confirmDelete = () => {
     if (taskToDelete && taskToDelete.userEmail === currentUserEmail) {
       dispatch(deleteTask(taskToDelete.id));
@@ -102,21 +110,25 @@ const HomeScreen: React.FC = () => {
     }
   };
 
-  const cancelDelete = () => {
-    setShowDeleteConfirm(false);
-    setTaskToDelete(null);
+  const handleCloseModal = () => {
+    setModalVisible(false);
+    setSelectedTask(null);
+    setOriginalTask(null);
   };
+
 
   return (
     <View style={styles.container}>
+
+      <TouchableOpacity style={styles.logoutButton} onPress={() => setIsLoggedIn(false)}>
+        <Text style={styles.logoutButtonText}>Logout</Text>
+      </TouchableOpacity>
       <WarningModal
         visible={showUnchangedConfirm}
         message="No changes made. Do you still want to update the task?"
-        onClose={handleClose}
+        onClose={() => setShowUnchangedConfirm(false)}
         onConfirm={() => {
-          if (selectedTask) {
-            dispatch(updateTask(selectedTask));
-          }
+          if (selectedTask) dispatch(updateTask(selectedTask));
           setShowUnchangedConfirm(false);
           setModalVisible(false);
         }}
@@ -124,32 +136,33 @@ const HomeScreen: React.FC = () => {
       <WarningModal
         visible={showErrorModal}
         message={errorMessage}
-        onClose={errHandleClose}
-        onConfirm={errHandleConfrim}
+        onClose={() => setShowErrorModal(false)}
+        onConfirm={() => setShowErrorModal(false)}
       />
       <WarningModal
         visible={showDeleteConfirm}
         message={`Are you sure you want to delete "${taskToDelete?.title}"?`}
-        onClose={cancelDelete}
+        onClose={() => setShowDeleteConfirm(false)}
         onConfirm={confirmDelete}
       />
-
-      <TouchableOpacity
-        style={styles.logoutButton}
-        onPress={() => setIsLoggedIn(false)}
-      >
-        <Text style={styles.logoutButtonText}>Logout</Text>
-      </TouchableOpacity>
-
       <View style={styles.contentContainer}>
         <SearchBar value={search} onChangeText={setSearch} placeholder="Search tasks..." />
         <TaskList
-          tasks={filteredTasks}
+          tasks={paginatedTasks}
           onTaskPress={handleTaskList}
-          onDeletePress={handleDeletePress}
+          onDeletePress={task => {
+            setTaskToDelete(task);
+            setShowDeleteConfirm(true);
+          }}
         />
       </View>
-
+      {filteredTasks.length > TASKS_PER_PAGE && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          goToPage={goToPage}
+        />
+      )}
 
       <TouchableOpacity
         style={styles.addButton}
@@ -157,40 +170,14 @@ const HomeScreen: React.FC = () => {
       >
         <Text style={styles.addButtonText}>+</Text>
       </TouchableOpacity>
+      <EditTaskModal
+        visible={modalVisible}
+        task={selectedTask}
+        onClose={handleCloseModal}
+        onChange={setSelectedTask}
+        onSave={handleUpdate}
+      />
 
-      <Modal visible={modalVisible} animationType="slide">
-        <View style={styles.modalContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="Title"
-            placeholderTextColor={Colors.mediumText}
-            value={selectedTask?.title || ''}
-            onChangeText={text =>
-              setSelectedTask(prev => prev ? { ...prev, title: text } : null)
-            }
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Description"
-            placeholderTextColor={Colors.mediumText}
-            value={selectedTask?.description || ''}
-            onChangeText={text =>
-              setSelectedTask(prev => prev ? { ...prev, description: text } : null)
-            }
-          />
-
-          <StatusPicker
-            selectedValue={selectedTask?.status || ''}
-            onValueChange={(value) =>
-              setSelectedTask(prev => prev ? { ...prev, status: value } : null)
-            }
-          />
-
-          <TouchableOpacity style={styles.saveButton} onPress={handleUpdate}>
-            <Text style={styles.saveButtonText}>Save</Text>
-          </TouchableOpacity>
-        </View>
-      </Modal>
     </View>
   );
 };
@@ -236,35 +223,10 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   addButtonText: {
-    color: Colors.primaryButtonText,
+    color: Colors.background,
     fontSize: 30,
     fontWeight: 'bold',
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    padding: 20,
-    backgroundColor: Colors.background,
-  },
-  input: {
-    backgroundColor: Colors.lightGray,
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 15,
-    fontSize: 16,
-    color: Colors.darkText,
-  },
-  saveButton: {
-    backgroundColor: Colors.saveButton,
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  saveButtonText: {
-    color: Colors.primaryButtonText,
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
+  }
 });
 
 export default HomeScreen;

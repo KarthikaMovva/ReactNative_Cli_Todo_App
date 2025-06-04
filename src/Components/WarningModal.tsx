@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.cancelButton,
   },
   buttonText: {
-    color: Colors.primaryButtonText,
+    color: Colors.background,
     fontWeight: 'bold',
   },
 });
