@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet, Text } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../App';
+import { RootStackParamList } from '../Type/types';
 import { useAuth } from '../Auth/authContext';
 import WarningModal from '../Components/WarningModal';
 import Colors from '../Utilities/Colors';

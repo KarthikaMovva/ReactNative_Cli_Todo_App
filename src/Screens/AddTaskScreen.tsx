@@ -6,7 +6,7 @@ import { addTask } from '../Redux/TaskSlice';
 import Colors from '../Utilities/Colors';
 import WarningModal from '../Components/WarningModal';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../App';
+import { RootStackParamList } from '../Type/types';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../Auth/authContext';
 
@@ -23,6 +23,9 @@ const AddTaskScreen = () => {
     if (title.trim() && currentUserEmail) {
       dispatch(addTask({ title, description: description.trim() ? description : 'No description', status, userEmail: currentUserEmail }));
       navigation.goBack();
+      setTitle("")
+      setDescription("")
+      setStatus('pending')
     } else {
       setWarningVisible(true);
     }

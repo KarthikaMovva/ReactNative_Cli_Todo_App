@@ -8,9 +8,10 @@ interface Props {
   tasks: Task[];
   onTaskPress: (task: Task) => void;
   onDeletePress: (task: Task) => void;
+  onEndReached?: () => void;
 }
 
-const TaskList: React.FC<Props> = ({ tasks, onTaskPress, onDeletePress }) => {
+const TaskList: React.FC<Props> = ({ tasks, onTaskPress, onDeletePress, onEndReached }) => {
   const renderItem = ({ item }: { item: Task }) => (
     <TouchableOpacity
       style={[styles.taskItem, { backgroundColor: getStatusColor(item.status) }]}
@@ -32,14 +33,21 @@ const TaskList: React.FC<Props> = ({ tasks, onTaskPress, onDeletePress }) => {
   );
 
   return (
-    <FlatList
-      data={tasks}
-      keyExtractor={item => item.id}
-      renderItem={renderItem}
-      ListEmptyComponent={<Text style={styles.emptyText}>No tasks found.</Text>}
-    />
+    <View style={{ flex: 1 }}>
+      <FlatList
+        data={tasks}
+        keyExtractor={item => item.id}
+        renderItem={renderItem}
+        ListEmptyComponent={<Text style={styles.emptyText}>No tasks found.</Text>}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={tasks.length === 0 ? styles.emptyContainer : undefined}
+        onEndReached={onEndReached}
+        onEndReachedThreshold={0.5}
+      />
+    </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   taskItem: {
@@ -76,8 +84,13 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     textAlign: 'center',
-    marginTop: 20,
+    marginTop: 30,
+    fontSize: 16,
     color: Colors.lightText,
+  },
+  emptyContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
   },
 });
 

@@ -17,6 +17,7 @@ interface AuthContextType {
   currentUserEmail: string | null;
   setCurrentUserEmail: (email: string | null) => void;
   users: RegisteredUser[];
+  logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -30,18 +31,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signup = () => {
     const existingUser = users.find(u => u.email === email);
-    if (existingUser) throw new Error('User already exists, Prefer to login');
-    setUsers([...users, { email, password }]);
+    if (existingUser) throw new Error('User already exists, please login instead.');
+    setUsers(prevUsers => [...prevUsers, { email, password }]);
     setIsLoggedIn(true);
     setCurrentUserEmail(email);
   };
 
   const login = () => {
     const existingUser = users.find(u => u.email === email);
-    if (!existingUser) throw new Error('User not found, Prefer to signup');
-    if (existingUser.password !== password) throw new Error('Incorrect password');
+    if (!existingUser) throw new Error('User not found, please sign up.');
+    if (existingUser.password !== password) throw new Error('Incorrect password.');
     setIsLoggedIn(true);
     setCurrentUserEmail(email);
+  };
+
+  const logout = () => {
+    setIsLoggedIn(false);
+    setCurrentUserEmail(null); 
+    setEmail('');
+    setPassword('');
   };
 
   useEffect(() => {
@@ -55,18 +63,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   return (
     <AuthContext.Provider
       value={{
-        email, setEmail, password, setPassword,
-        login, signup,
-        isLoggedIn, setIsLoggedIn,
-        currentUserEmail, setCurrentUserEmail,
+        email,
+        setEmail,
+        password,
+        setPassword,
+        login,
+        signup,
+        isLoggedIn,
+        setIsLoggedIn,
+        currentUserEmail,
+        setCurrentUserEmail,
         users,
+        logout,
       }}
     >
       {children}
     </AuthContext.Provider>
   );
 };
-
 
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
