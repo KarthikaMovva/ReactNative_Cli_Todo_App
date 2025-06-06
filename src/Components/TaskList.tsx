@@ -1,17 +1,12 @@
 import React from 'react';
 import { Text, FlatList, TouchableOpacity, View, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { Task } from '../Type/types';
-import Colors, { getStatusColor } from '../Utilities/Colors';
+import { TaskListProps } from '../Types/Props.Types';
+import Task  from '../Types/Task.Types';
+import Colors from '../Utilities/Colors';
+import { getStatusColor } from '../Utilities/GetStatusColor';
 
-interface Props {
-  tasks: Task[];
-  onTaskPress: (task: Task) => void;
-  onDeletePress: (task: Task) => void;
-  onEndReached?: () => void;
-}
-
-const TaskList: React.FC<Props> = ({ tasks, onTaskPress, onDeletePress, onEndReached }) => {
+const TaskList: React.FC<TaskListProps> = ({ tasks, onTaskPress, onDeletePress, onEndReached }) => {
   const renderItem = ({ item }: { item: Task }) => (
     <TouchableOpacity
       style={[styles.taskItem, { backgroundColor: getStatusColor(item.status) }]}

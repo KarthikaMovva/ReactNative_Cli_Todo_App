@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, StatusBar } from 'react-native';
 import Colors from '../Utilities/Colors'; 
 
 const SettingsScreen = () => {
   return (
     <View style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
       <Text style={styles.title}>Settings</Text>
     </View>
   );

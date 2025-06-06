@@ -1,21 +1,22 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../Type/types';
+import { RootStackParamList } from '../Types/Navigation.Types';
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet, Text } from 'react-native';
-import { useAuth } from '../Auth/authContext';
+import { View, StyleSheet, Text, StatusBar } from 'react-native';
+import { useAuth } from '../Auth/AuthContext';
+import isValidEmail from '../Utilities/IsValidEmail';
 import Colors from '../Utilities/Colors';
+import CustomInput from '../Components/CustomInput';
+import CustomButton from '../Components/CustomButton';
 import WarningModal from '../Components/WarningModal';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
 const LoginScreen: React.FC<Props> = ({ navigation }) => {
-    const { email, setEmail, password, setPassword, login } = useAuth();
+    const { login } = useAuth();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [showWarningModal, setShowWarningModal] = useState(false);
     const [warningMessage, setWarningMessage] = useState('');
-
-    const isValidEmail = (email: string) => {
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    };
 
     const handleLogin = () => {
         if (!email.trim() || !password.trim()) {
@@ -32,7 +33,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
 
         try {
             login();
-        } catch (err:any) {
+        } catch (err: any) {
             setWarningMessage(err.message || 'Login failed');
             setShowWarningModal(true);
         }
@@ -45,6 +46,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
+            <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
             <WarningModal
                 visible={showWarningModal}
                 message={warningMessage}
@@ -52,29 +54,22 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
             />
 
             <Text style={styles.title}>Login</Text>
-            <TextInput
-                placeholder="Email"
-                placeholderTextColor={Colors.mediumText}
+            <CustomInput
+                placeholder="Enter Email"
                 value={email}
                 onChangeText={setEmail}
-                style={styles.input}
-                keyboardType="email-address"
-                autoCapitalize="none"
             />
-            <TextInput
-                placeholder="Password"
-                placeholderTextColor={Colors.mediumText}
+            <CustomInput
+                placeholder='Enter Password'
                 value={password}
                 onChangeText={setPassword}
-                secureTextEntry
-                style={styles.input}
             />
 
             <Text onPress={() => navigation.navigate('Signup')} style={styles.switchText}>
                 Don’t have an account? Sign up
             </Text>
 
-            <Button title="Login" onPress={handleLogin} color={Colors.primaryButton} />
+            <CustomButton onPress={handleLogin} text="Login" />
         </View>
     );
 };
@@ -85,7 +80,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         paddingHorizontal: 25,
         paddingVertical: 40,
-        backgroundColor: Colors.loginBackground, 
+        backgroundColor: Colors.loginBackground,
     },
     title: {
         fontSize: 28,

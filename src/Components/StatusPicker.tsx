@@ -9,14 +9,11 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 import Colors from '../Utilities/Colors';
-import { STATUS_OPTIONS } from '../Utilities/Constants';
+import { StatusPickerProps } from '../Types/Props.Types';
+import { TaskStatus } from '../Utilities/Constants';
+import Ionicons from 'react-native-vector-icons/Ionicons'; 
 
-interface Props {
-  selectedValue: string;
-  onValueChange: (value: string) => void;
-}
-
-const StatusPicker: React.FC<Props> = ({ selectedValue, onValueChange }) => {
+const StatusPicker: React.FC<StatusPickerProps> = ({ selectedValue, onValueChange }) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   const handleSelect = (value: string) => {
@@ -24,41 +21,45 @@ const StatusPicker: React.FC<Props> = ({ selectedValue, onValueChange }) => {
     setModalVisible(false);
   };
 
-  const openModal = () => {
-    setModalVisible(true);
-  }
-
-  const closeModal = () => {
-    setModalVisible(false);
-  }
-
   return (
     <View>
       <TouchableOpacity
         style={styles.pickerButton}
-        onPress={openModal}
+        onPress={() => setModalVisible(true)}
       >
-        <Text style={styles.pickerButtonText}>{selectedValue || 'Select status'}</Text>
+        <Text style={styles.pickerButtonText}>
+          {selectedValue || 'Select status'}
+        </Text>
       </TouchableOpacity>
 
       <Modal
         visible={modalVisible}
         transparent
         animationType="fade"
-        onRequestClose={closeModal}
+        onRequestClose={() => setModalVisible(false)}
       >
-        <TouchableWithoutFeedback onPress={closeModal}>
+        <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
           <View style={styles.modalOverlay}>
             <TouchableWithoutFeedback>
               <View style={styles.modalContent}>
                 <FlatList
-                  data={STATUS_OPTIONS}
+                  data={Object.values(TaskStatus)}
                   keyExtractor={(item) => item}
                   renderItem={({ item }) => (
                     <TouchableOpacity
                       style={styles.option}
                       onPress={() => handleSelect(item)}
                     >
+                      <Ionicons
+                        name={
+                          item === selectedValue
+                            ? 'radio-button-on'
+                            : 'radio-button-off'
+                        }
+                        size={20}
+                        color={Colors.primaryButton}
+                        style={styles.radioIcon}
+                      />
                       <Text style={styles.optionText}>{item}</Text>
                     </TouchableOpacity>
                   )}
@@ -96,10 +97,13 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   option: {
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingVertical: 15,
-    paddingHorizontal: 20,
-    borderBottomWidth: 1,
-    borderColor: Colors.inputBorder,
+    paddingHorizontal: 20
+  },
+  radioIcon: {
+    marginRight: 10,
   },
   optionText: {
     fontSize: 16,

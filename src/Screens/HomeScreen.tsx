@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, StatusBar } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { RootState } from '../Redux/store';
+import { RootState } from '../Redux/Store';
 import { updateTask, deleteTask } from '../Redux/TaskSlice';
-import { Task } from '../Type/types';
-import { useAuth } from '../Auth/authContext';
+import  Task  from '../Types/Task.Types';
+import { useAuth } from '../Auth/AuthContext';
 import Colors from '../Utilities/Colors';
 
 import SearchBar from '../Components/SearchBar';
@@ -112,6 +112,7 @@ const HomeScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
       <WarningModal
         visible={showUnchangedConfirm}
         message="No changes made. Do you still want to update the task?"

@@ -1,13 +1,7 @@
 import React from 'react';
 import { Modal, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { WarningModalProps } from "../Types/Props.Types"
 import Colors from '../Utilities/Colors';
-
-interface WarningModalProps {
-  visible: boolean;
-  message: string;
-  onClose: () => void;
-  onConfirm?: () => void;
-}
 
 const WarningModal: React.FC<WarningModalProps> = ({ visible, message, onClose, onConfirm }) => {
   return (

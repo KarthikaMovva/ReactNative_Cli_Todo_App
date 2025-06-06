@@ -1,19 +1,24 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Text, StatusBar } from 'react-native';
+
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../Type/types';
-import { useAuth } from '../Auth/authContext';
+import { RootStackParamList } from '../Types/Navigation.Types';
+import { useAuth } from '../Auth/AuthContext';
+
+import CustomInput from '../Components/CustomInput';
+import CustomButton from '../Components/CustomButton';
 import WarningModal from '../Components/WarningModal';
+import isValidEmail from '../Utilities/IsValidEmail';
 import Colors from '../Utilities/Colors';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Signup'>;
 
 const SignupScreen: React.FC<Props> = ({ navigation }) => {
-    const { email, setEmail, password, setPassword, signup } = useAuth();
+    const { signup } = useAuth();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [showWarningModal, setShowWarningModal] = useState(false);
     const [warningMessage, setWarningMessage] = useState('');
-
-    const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
     const handleSignup = () => {
         if (!email.trim() || !password.trim()) {
@@ -44,6 +49,7 @@ const SignupScreen: React.FC<Props> = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
+            <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
             <WarningModal
                 visible={showWarningModal}
                 message={warningMessage}
@@ -51,28 +57,21 @@ const SignupScreen: React.FC<Props> = ({ navigation }) => {
             />
 
             <Text style={styles.title}>Sign Up</Text>
-            <TextInput
-                placeholder="Email"
-                placeholderTextColor={Colors.mediumText}
+              <CustomInput
+                placeholder="Enter Email"
                 value={email}
                 onChangeText={setEmail}
-                style={styles.input}
-                keyboardType="email-address"
-                autoCapitalize="none"
             />
-            <TextInput
-                placeholder="Password"
-                placeholderTextColor={Colors.mediumText}
+            <CustomInput
+                placeholder='Enter Password'
                 value={password}
                 onChangeText={setPassword}
-                secureTextEntry
-                style={styles.input}
             />
 
             <Text onPress={() => navigation.navigate('Login')} style={styles.switchText}>
                 Already have an account? Log in
             </Text>
-            <Button title="Sign Up" onPress={handleSignup} color={Colors.primaryButton} />
+            <CustomButton onPress={handleSignup} text="Signup" />
         </View>
     );
 };

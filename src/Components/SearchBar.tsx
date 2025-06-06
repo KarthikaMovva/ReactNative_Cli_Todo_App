@@ -1,12 +1,7 @@
 import React from 'react';
 import { TextInput, StyleSheet, View } from 'react-native';
+import { SearchBarProps } from '../Types/Props.Types';
 import Colors from '../Utilities/Colors';
-
-interface SearchBarProps {
-  value: string;
-  onChangeText: (text: string) => void;
-  placeholder?: string;
-}
 
 const SearchBar: React.FC<SearchBarProps> = ({ value, onChangeText, placeholder = 'Search...' }) => {
   return (

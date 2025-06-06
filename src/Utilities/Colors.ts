@@ -23,17 +23,4 @@ const Colors = {
   loginSwitchtext : '#007AFF'
 };
 
-export const getStatusColor = (status: string): string => {
-  switch (status.toLowerCase()) {
-    case 'pending':
-      return Colors.statusPending;
-    case 'in progress':
-      return Colors.statusInProgress;
-    case 'done':
-      return Colors.statusDone;
-    default:
-      return Colors.background;
-  }
-};
-
 export default Colors;

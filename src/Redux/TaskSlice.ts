@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { generateUniqueId } from '../Utilities/generateId';
-import { Task } from '../Type/types'; 
+import { generateUniqueId } from '../Utilities/GenerateId';
+import  Task  from '../Types/Task.Types'; 
 
 
 interface TaskState {
