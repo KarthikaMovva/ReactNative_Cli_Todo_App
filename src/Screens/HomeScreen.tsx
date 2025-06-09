@@ -1,30 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState, useEffect, useMemo } from 'react';
+import { View, StyleSheet, StatusBar } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { RootState } from '../Redux/store';
+import { RootState } from '../Redux/Store';
 import { updateTask, deleteTask } from '../Redux/TaskSlice';
-import { RootStackParamList } from '../App';
-import { Task } from '../Type/types';
-import { useAuth } from '../Auth/authContext';
+import { Task } from '../Types/Redux.Types';
+import { useAuth } from '../Auth/AuthContext';
 import Colors from '../Utilities/Colors';
 
 import SearchBar from '../Components/SearchBar';
 import TaskList from '../Components/TaskList';
 import WarningModal from '../Components/WarningModal';
-import Pagination from '../Components/Pagination';
 import EditTaskModal from '../Components/EditTaskModal';
 
 const TASKS_PER_PAGE = 7;
 
 const HomeScreen: React.FC = () => {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const allTasks = useSelector((state: RootState) => state.tasks.value);
   const dispatch = useDispatch();
-
-  const { setIsLoggedIn, currentUserEmail } = useAuth();
+  const { currentUserEmail } = useAuth();
 
   const [search, setSearch] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
@@ -35,32 +29,33 @@ const HomeScreen: React.FC = () => {
   const [selectedTask, setSelectedTask] = useState<null | Task>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState<null | Task>(null);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [visibleTasks, setVisibleTasks] = useState<Task[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(1);
 
-  const userTasks = allTasks.filter(task => task.userEmail === currentUserEmail);
-  const filteredTasks = userTasks.filter(task =>
-    task.title.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredTasks = useMemo(() => {
+    const userTasks = allTasks.filter(task => task.userEmail === currentUserEmail);
+    return userTasks.filter(task =>
+      task.title.toLowerCase().includes(search.toLowerCase())
+    );
+  }, [allTasks, currentUserEmail, search]);
 
   useEffect(() => {
-  const newTotalPages = Math.ceil(filteredTasks.length / TASKS_PER_PAGE);
-  if (currentPage > newTotalPages && newTotalPages > 0) {
-    setCurrentPage(newTotalPages);
-  } else if (newTotalPages === 0) {
-    setCurrentPage(1);
-  }
-}, [filteredTasks.length, currentPage]);
 
-  const totalPages = Math.ceil(filteredTasks.length / TASKS_PER_PAGE);
+    const newVisibleTasks = filteredTasks.slice(0, currentIndex * TASKS_PER_PAGE);
+    setVisibleTasks(newVisibleTasks);
+  }, [filteredTasks, currentIndex]);
 
-  const paginatedTasks = filteredTasks.slice(
-    (currentPage - 1) * TASKS_PER_PAGE,
-    currentPage * TASKS_PER_PAGE
-  );
+  useEffect(() => {
+    setCurrentIndex(1);
+  }, [search]);
 
-  const goToPage = (page: number) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
+
+  const loadMoreTasks = () => {
+    if (visibleTasks.length < filteredTasks.length) {
+      const nextIndex = currentIndex + 1;
+      const newTasks = filteredTasks.slice(0, nextIndex * TASKS_PER_PAGE);
+      setVisibleTasks(newTasks);
+      setCurrentIndex(nextIndex);
     }
   };
 
@@ -69,9 +64,6 @@ const HomeScreen: React.FC = () => {
     setOriginalTask({ ...task });
     setModalVisible(true);
   };
-
-
-
 
   const handleUpdate = () => {
     if (!selectedTask || !originalTask) return;
@@ -86,7 +78,9 @@ const HomeScreen: React.FC = () => {
       return;
     }
 
-    const taskExists = allTasks.some(task => task.id === selectedTask.id && task.userEmail === currentUserEmail);
+    const taskExists = allTasks.some(
+      task => task.id === selectedTask.id && task.userEmail === currentUserEmail
+    );
     if (!taskExists) {
       setErrorMessage('Task not found or you do not have permission to update it.');
       setShowErrorModal(true);
@@ -116,13 +110,9 @@ const HomeScreen: React.FC = () => {
     setOriginalTask(null);
   };
 
-
   return (
     <View style={styles.container}>
-
-      <TouchableOpacity style={styles.logoutButton} onPress={() => setIsLoggedIn(false)}>
-        <Text style={styles.logoutButtonText}>Logout</Text>
-      </TouchableOpacity>
+      <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
       <WarningModal
         visible={showUnchangedConfirm}
         message="No changes made. Do you still want to update the task?"
@@ -148,28 +138,16 @@ const HomeScreen: React.FC = () => {
       <View style={styles.contentContainer}>
         <SearchBar value={search} onChangeText={setSearch} placeholder="Search tasks..." />
         <TaskList
-          tasks={paginatedTasks}
+          tasks={visibleTasks}
           onTaskPress={handleTaskList}
           onDeletePress={task => {
             setTaskToDelete(task);
             setShowDeleteConfirm(true);
           }}
+          onEndReached={loadMoreTasks}
         />
       </View>
-      {filteredTasks.length > TASKS_PER_PAGE && (
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          goToPage={goToPage}
-        />
-      )}
 
-      <TouchableOpacity
-        style={styles.addButton}
-        onPress={() => navigation.navigate('AddTask')}
-      >
-        <Text style={styles.addButtonText}>+</Text>
-      </TouchableOpacity>
       <EditTaskModal
         visible={modalVisible}
         task={selectedTask}
@@ -177,7 +155,6 @@ const HomeScreen: React.FC = () => {
         onChange={setSelectedTask}
         onSave={handleUpdate}
       />
-
     </View>
   );
 };
@@ -188,44 +165,8 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: Colors.lightGray,
   },
-  logoutButton: {
-    position: 'absolute',
-    top: 20,
-    right: 20,
-    zIndex: 10,
-    padding: 8,
-    borderRadius: 5,
-    backgroundColor: Colors.lightGray,
-  },
-  logoutButtonText: {
-    color: Colors.dangerButton,
-    fontWeight: 'bold',
-  },
-
   contentContainer: {
-    flex: 1,
-    paddingTop: 40,
-  },
-  addButton: {
-    position: 'absolute',
-    right: 20,
-    bottom: 30,
-    backgroundColor: Colors.primaryButton,
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: Colors.darkText,
-    shadowOpacity: 0.2,
-    shadowOffset: { width: 0, height: 3 },
-    shadowRadius: 4,
-    elevation: 4,
-  },
-  addButtonText: {
-    color: Colors.background,
-    fontSize: 30,
-    fontWeight: 'bold',
+    flex: 1
   }
 });
 

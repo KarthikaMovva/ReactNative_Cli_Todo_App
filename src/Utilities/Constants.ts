@@ -1,1 +1,5 @@
-export const STATUS_OPTIONS = ['pending', 'in progress', 'done'];
+export enum TaskStatus {
+  PENDING = 'pending',
+  IN_PROGRESS = 'in progress',
+  DONE = 'done',
+}

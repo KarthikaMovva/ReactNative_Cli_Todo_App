@@ -1,11 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { generateUniqueId } from '../Utilities/generateId';
-import { Task } from '../Type/types'; 
-
-
-interface TaskState {
-  value: Task[];
-}
+import { generateUniqueId } from '../Utilities/GenerateId';
+import { TaskState, Task } from '../Types/Redux.Types';
 
 const initialState: TaskState = {
   value: [],

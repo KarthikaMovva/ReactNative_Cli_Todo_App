@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet, StatusBar } from 'react-native';
 import StatusPicker from '../Components/StatusPicker';
+import CustomButton from '../Components/CustomButton';
+import CustomInput from '../Components/CustomInput';
 import { useDispatch } from 'react-redux';
 import { addTask } from '../Redux/TaskSlice';
 import Colors from '../Utilities/Colors';
 import WarningModal from '../Components/WarningModal';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../App';
+import { RootStackParamList } from '../Types/Navigation.Types';
 import { useNavigation } from '@react-navigation/native';
-import { useAuth } from '../Auth/authContext';
+import { useAuth } from '../Auth/AuthContext';
 
 const AddTaskScreen = () => {
   const [title, setTitle] = useState('');
@@ -23,6 +25,10 @@ const AddTaskScreen = () => {
     if (title.trim() && currentUserEmail) {
       dispatch(addTask({ title, description: description.trim() ? description : 'No description', status, userEmail: currentUserEmail }));
       navigation.goBack();
+      console.log(currentUserEmail,"currentuserEmail");
+      setTitle("")
+      setDescription("")
+      setStatus('pending')
     } else {
       setWarningVisible(true);
     }
@@ -34,35 +40,27 @@ const AddTaskScreen = () => {
 
   return (
     <View style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
       <WarningModal
         visible={warningVisible}
-        message="Please enter task Title, description and status before adding, and ensure you are logged in."
+        message="Please enter task Title, description and status to add."
         onClose={handleClose}
       />
-
-      <TextInput
-        style={styles.input}
+      <CustomInput
         placeholder="Title"
-        placeholderTextColor={Colors.mediumText}
         value={title}
         onChangeText={setTitle}
       />
-      <TextInput
-        style={styles.input}
+      <CustomInput
         placeholder="Description"
-        placeholderTextColor={Colors.mediumText}
         value={description}
         onChangeText={setDescription}
       />
-
       <StatusPicker
         selectedValue={status}
         onValueChange={setStatus}
       />
-
-      <TouchableOpacity style={styles.addButton} onPress={handleAdd}>
-        <Text style={styles.addButtonText}>Add Task</Text>
-      </TouchableOpacity>
+      <CustomButton text="Add Task" onPress={handleAdd} />
     </View>
   );
 };
@@ -72,26 +70,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: Colors.background,
-  },
-  input: {
-    backgroundColor: Colors.lightGray,
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 15,
-    fontSize: 16,
-    color: Colors.darkText,
-  },
-  addButton: {
-    backgroundColor: Colors.primaryButton,
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  addButtonText: {
-    color: Colors.background,
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
+  }
 });
 
 export default AddTaskScreen;
