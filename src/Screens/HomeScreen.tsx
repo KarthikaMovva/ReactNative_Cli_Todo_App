@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { RootState } from '../Redux/Store';
 import { updateTask, deleteTask } from '../Redux/TaskSlice';
-import  Task  from '../Types/Task.Types';
+import { Task } from '../Types/Redux.Types';
 import { useAuth } from '../Auth/AuthContext';
 import Colors from '../Utilities/Colors';
 
@@ -166,8 +166,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.lightGray,
   },
   contentContainer: {
-    flex: 1,
-    paddingTop: 40,
+    flex: 1
   }
 });
 

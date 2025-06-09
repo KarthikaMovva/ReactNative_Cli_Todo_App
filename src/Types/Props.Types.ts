@@ -1,4 +1,4 @@
-import Task from "./Task.Types";
+import { Task } from "./Redux.Types";
 
 export interface TaskListProps {
   tasks: Task[];
@@ -42,4 +42,6 @@ export interface CustomInputProps {
   value: string;
   onChangeText: (text: string) => void;
   placeholder: string;
+  secureTextEntry?: boolean;
+  [key: string]: any;
 }

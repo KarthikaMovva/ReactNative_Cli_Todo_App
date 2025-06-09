@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity, StyleSheet } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
@@ -12,9 +12,15 @@ const MenuButton = () => {
 
   return (
     <TouchableOpacity onPress={() => navigation.openDrawer()}>
-      <Ionicons name="menu" size={24} color="black" />
+      <Ionicons name="menu" size={24} color="black" style={styles.container}/>
     </TouchableOpacity>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: 10,
+  },
+});
 
 export default MenuButton;

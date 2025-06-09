@@ -25,6 +25,7 @@ const AddTaskScreen = () => {
     if (title.trim() && currentUserEmail) {
       dispatch(addTask({ title, description: description.trim() ? description : 'No description', status, userEmail: currentUserEmail }));
       navigation.goBack();
+      console.log(currentUserEmail,"currentuserEmail");
       setTitle("")
       setDescription("")
       setStatus('pending')

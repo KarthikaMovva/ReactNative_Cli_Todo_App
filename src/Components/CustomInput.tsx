@@ -7,6 +7,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
   value,
   onChangeText,
   placeholder,
+  secureTextEntry = false, 
   ...rest
 }) => {
   return (
@@ -16,6 +17,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
       placeholderTextColor={Colors.mediumText}
       value={value}
       onChangeText={onChangeText}
+      secureTextEntry={secureTextEntry}
       {...rest}
     />
   );
@@ -23,12 +25,12 @@ const CustomInput: React.FC<CustomInputProps> = ({
 
 const styles = StyleSheet.create({
   input: {
-    backgroundColor: Colors.lightGray,
-    borderColor : Colors.darkText,
-    borderWidth : 1,
+    backgroundColor: Colors.loginBackground,
+    borderColor: Colors.signupInputBorder,
+    borderWidth: 1,
     padding: 12,
     borderRadius: 8,
-    marginBottom: 15,
+    marginVertical: 15,
     fontSize: 16,
     color: Colors.darkText,
   },
