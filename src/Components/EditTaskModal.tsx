@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, TextInput, TouchableOpacity, Text, View, StyleSheet } from 'react-native';
-import  Task  from '../Types/Task.Types';
+import { Task } from '../Types/Redux.Types';
 import StatusPicker from './StatusPicker';
 import Colors from '../Utilities/Colors';
 
@@ -61,21 +61,21 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.lightGray,
     padding: 12,
     borderRadius: 8,
-    marginBottom: 15,
+    marginVertical: 10,
     fontSize: 16,
     color: Colors.darkText,
   },
   buttonRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 10,
+    marginVertical: 10,
   },
   saveButton: {
     backgroundColor: Colors.saveButton,
     padding: 15,
     borderRadius: 10,
     flex: 1,
-    marginLeft: 5,
+    marginHorizontal: 5,
     alignItems: 'center',
   },
   closeButton: {
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     flex: 1,
-    marginRight: 5,
+    marginHorizontal: 5,
     alignItems: 'center',
   },
   buttonText: {

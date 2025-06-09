@@ -1,4 +1,5 @@
 import { Task } from "./Redux.Types";
+import { GestureResponderEvent, TextStyle } from "react-native";
 
 export interface TaskListProps {
   tasks: Task[];
@@ -44,4 +45,14 @@ export interface CustomInputProps {
   placeholder: string;
   secureTextEntry?: boolean;
   [key: string]: any;
+}
+
+export interface SwitchTextProps {
+  text: string;
+  onPress: (event: GestureResponderEvent) => void;
+}
+
+export interface TitleProps {
+  heading: string;
+  style?: TextStyle; 
 }

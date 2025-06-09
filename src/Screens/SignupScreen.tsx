@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Text, StatusBar } from 'react-native';
+import { View, StyleSheet, StatusBar } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../Types/Navigation.Types';
-
 import { useDispatch, useSelector } from 'react-redux';
-import { signupUser } from '../Redux/UserSlice';
+
+import { RootStackParamList } from '../Types/Navigation.Types';
 import { RootState } from '../Redux/store';
+import { signupUser } from '../Redux/UserSlice';
+import axiosInstance from '../Network/AxiosInstance';
 
 import CustomInput from '../Components/CustomInput';
 import CustomButton from '../Components/CustomButton';
+import Title from '../Components/Title';
+import SwitchText from '../Components/SwitchText';
 import WarningModal from '../Components/WarningModal';
 import isValidEmail from '../Utilities/IsValidEmail';
 import Colors from '../Utilities/Colors';
@@ -26,7 +29,7 @@ const SignupScreen: React.FC<Props> = ({ navigation }) => {
   const { setIsLoggedIn, setCurrentUserEmail } = useAuth();
   const users = useSelector((state: RootState) => state.users.users);
 
-  const handleSignup = () => {
+  const handleSignup = async () => {
     if (!email.trim() || !password.trim()) {
       setWarningMessage('Please enter both email and password.');
       setShowWarningModal(true);
@@ -47,14 +50,24 @@ const SignupScreen: React.FC<Props> = ({ navigation }) => {
 
     const existingUser = users.find(user => user.email === email);
     if (existingUser) {
-      setWarningMessage('User already exists. Please log in.');
+      setWarningMessage('User already exists. Please log in instead.');
       setShowWarningModal(true);
       return;
     }
 
-    dispatch(signupUser({ email, password }));
-    setIsLoggedIn(true);
-    setCurrentUserEmail(email);
+    try {
+      const response = await axiosInstance.get('/authentication');
+      const token = response.data.request_token;
+
+      dispatch(signupUser({ email, password, token }));
+
+      setIsLoggedIn(true);
+      setCurrentUserEmail(email);
+    } catch (error: any) {
+      console.error('API Error:', error);
+      setWarningMessage(error?.response?.data?.status_message || 'Failed to authenticate.');
+      setShowWarningModal(true);
+    }
   };
 
   return (
@@ -66,7 +79,7 @@ const SignupScreen: React.FC<Props> = ({ navigation }) => {
         onClose={() => setShowWarningModal(false)}
       />
 
-      <Text style={styles.title}>Sign Up</Text>
+      <Title heading='Signup' />
 
       <CustomInput
         placeholder="Enter Email"
@@ -80,9 +93,7 @@ const SignupScreen: React.FC<Props> = ({ navigation }) => {
         secureTextEntry={true}
       />
 
-      <Text onPress={() => navigation.navigate('Login')} style={styles.switchText}>
-        Already have an account? Log in
-      </Text>
+      <SwitchText text='Already have an account? Log in' onPress={() => { navigation.navigate('Login') }} />
 
       <CustomButton onPress={handleSignup} text="Signup" />
     </View>
@@ -96,21 +107,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 25,
     paddingVertical: 40,
     backgroundColor: Colors.signupBackground,
-  },
-  title: {
-    fontSize: 26,
-    fontWeight: 'bold',
-    marginBottom: 30,
-    textAlign: 'center',
-    color: Colors.signupTitle,
-  },
-  switchText: {
-    textAlign: 'center',
-    fontSize: 14,
-    color: Colors.signupSwitchText,
-    textDecorationLine: 'underline',
-    marginBottom: 25,
-  },
+  }
 });
 
 export default SignupScreen;

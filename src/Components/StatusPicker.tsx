@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.lightGray,
     padding: 12,
     borderRadius: 8,
-    marginBottom: 15,
+    marginVertical: 15,
   },
   pickerButtonText: {
     fontSize: 16,
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20
   },
   radioIcon: {
-    marginRight: 10,
+    marginHorizontal: 10,
   },
   optionText: {
     fontSize: 16,

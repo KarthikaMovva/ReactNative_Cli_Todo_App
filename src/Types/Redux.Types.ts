@@ -13,6 +13,7 @@ export interface TaskState {
 export interface RegisteredUser {
   email: string;
   password: string;
+  token: string;
 }
 
 export interface UserState {
