@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, FlatList, TouchableOpacity, View, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { TaskListProps } from '../Types/Props.Types';
-import Task  from '../Types/Task.Types';
+import { Task }  from '../Types/Redux.Types';
 import Colors from '../Utilities/Colors';
 import { getStatusColor } from '../Utilities/GetStatusColor';
 
@@ -49,11 +49,6 @@ const styles = StyleSheet.create({
     padding: 15,
     marginVertical: 8,
     borderRadius: 10,
-    shadowColor: Colors.darkText,
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 3,
-    elevation: 3,
     position: 'relative',
   },
   taskTitle: {
@@ -62,12 +57,12 @@ const styles = StyleSheet.create({
     color: Colors.darkText,
   },
   taskDescription: {
-    marginTop: 5,
+    marginVertical: 5,
     fontSize: 14,
     color: Colors.darkText,
   },
   taskStatus: {
-    marginTop: 5,
+    marginVertical: 5,
     fontSize: 13,
     color: Colors.mediumText,
   },
@@ -79,7 +74,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     textAlign: 'center',
-    marginTop: 30,
+    marginVertical: 30,
     fontSize: 16,
     color: Colors.lightText,
   },

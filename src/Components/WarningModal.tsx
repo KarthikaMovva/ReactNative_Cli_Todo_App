@@ -42,16 +42,11 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 10,
     width: '80%',
-    alignItems: 'center',
-    elevation: 5,
-    shadowColor: Colors.darkText,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    alignItems: 'center'
   },
   message: {
     fontSize: 16,
-    marginBottom: 20,
+    marginVertical: 20,
     textAlign: 'center',
     color: Colors.darkText,
   },
