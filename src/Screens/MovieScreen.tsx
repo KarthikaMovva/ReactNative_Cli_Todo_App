@@ -21,53 +21,62 @@ const MovieScreen: React.FC = () => {
     const [modalVisible, setModalVisible] = useState<boolean>(false);
     const [modalMessage, setModalMessage] = useState<string>('');
 
-    const fetchMovies = useCallback(
-        async (pageNumber: number = 1, isRefresh: boolean = false) => {
-            if (loading) return;
+const fetchMovies = useCallback(
+    async (pageNumber: number = 1, isRefresh: boolean = false) => {
+        if (loading) return;
 
-            setLoading(true);
+        setLoading(true);
 
-            try {
-                const response = await axiosMovieInstance.get<MovieApiResponse>(
-                    '/top_rated'
-                );
+        try {
+            const response = await axiosMovieInstance.get<MovieApiResponse>(
+                '/top_rated',
+                {
+                    params: {
+                        page: pageNumber,
+                    },
+                }
+            );
 
-                const { results, total_pages } = response.data;
+            const { results, total_pages } = response.data;
 
-                const sortedResults = results.sort(
-                    (a, b) => b.vote_average - a.vote_average
-                );
+            const sortedResults = results.sort(
+                (a, b) => b.vote_average - a.vote_average
+            );
 
-                setMovies(prev =>
-                    isRefresh ? sortedResults : [...prev, ...sortedResults]
-                );
-                setPage(pageNumber);
-                setTotalPages(total_pages);
-            } catch (err) {
-                console.error(err);
-                const errorMessage = 'Failed to fetch movies. Please check your API key or network.';
-                setModalMessage(errorMessage);
-                setModalVisible(true);
-            } 
-        },
-        [loading]
-    );
+            setMovies(prev =>
+                isRefresh ? sortedResults : [...prev, ...sortedResults]
+            );
+            setPage(pageNumber);
+            setTotalPages(total_pages);
+        } catch (err) {
+            console.error(err);
+            const errorMessage = 'Failed to fetch movies. Please check your API key or network.';
+            setModalMessage(errorMessage);
+            setModalVisible(true);
+        } finally {
+            setLoading(false);
+            if (isRefresh) setRefreshing(false);
+        }
+    },
+    [loading]
+);
+
 
     useEffect(() => {
         fetchMovies(1);
     }, [fetchMovies]);
 
-    const handleLoadMore = () => {
-        if (!loading && page < totalPages) {
-            fetchMovies(page + 1);
-        }
-    };
+const handleLoadMore = () => {
+    if (!loading && page < totalPages) {
+        fetchMovies(page + 1);
+    }
+};
 
-    const handleRefresh = () => {
-        setRefreshing(true);
-        setPage(1);
-        fetchMovies(1, true);
-    };
+const handleRefresh = () => {
+    setRefreshing(true);
+    fetchMovies(1, true);
+};
+
 
     return (
         <SafeAreaView style={styles.container}>

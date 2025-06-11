@@ -40,26 +40,36 @@ const MovieList: React.FC<MovieListProps> = ({
     </View>
   );
 
-  const renderFooter = () =>
+  const renderFooter = () => (
     loading && movies.length > 0 ? (
       <View style={styles.footer}>
         <ActivityIndicator size="large" color="#007bff" />
         <Text style={styles.footerText}>Loading more movies...</Text>
       </View>
-    ) : null;
+    ) : null
+  );
+
+  const renderEmptyComponent = () => (
+    !loading && !refreshing ? (
+      <View style={styles.footer}>
+        <Text style={styles.footerText}>No movies found</Text>
+      </View>
+    ) : null
+  );
 
   return (
     <FlatList
       data={movies}
-      keyExtractor={(item) => item.id.toString()}
       renderItem={renderItem}
-      onEndReached={onEndReached}
-      onEndReachedThreshold={0.5}
-      ListFooterComponent={renderFooter}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#007bff" />
-      }
+      keyExtractor={(item) => item.id.toString()}
       contentContainerStyle={styles.content}
+      onEndReached={onEndReached}
+      onEndReachedThreshold={0.4}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+      ListFooterComponent={renderFooter}
+      ListEmptyComponent={renderEmptyComponent}
     />
   );
 };
@@ -67,20 +77,20 @@ const MovieList: React.FC<MovieListProps> = ({
 const styles = StyleSheet.create({
   content: {
     padding: 10,
-    paddingVertical: 30,
+    paddingBottom: 30,
   },
   card: {
     flexDirection: 'row',
     backgroundColor: Colors.MovieCardBackgroundcolor,
     borderRadius: 12,
     marginVertical: 8,
-    padding: 15
+    padding: 15,
   },
   poster: {
     width: 100,
     height: 150,
     borderRadius: 8,
-    marginHorizontal: 15,
+    marginRight: 15,
   },
   details: {
     flex: 1,
