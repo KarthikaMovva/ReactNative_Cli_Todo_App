@@ -6,6 +6,7 @@ import HomeScreen from '../Screens/HomeScreen';
 import AddTaskScreen from '../Screens/AddTaskScreen';
 import SettingsScreen from '../Screens/SettingsScreen';
 import getTabBarIcon from '../Utilities/GetTabBarIcon';
+import MovieScreen from '../Screens/MovieScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -21,6 +22,7 @@ const TabNavigator = () => (
   >
     <Tab.Screen name="Home" component={HomeScreen} />
     <Tab.Screen name="Add Task" component={AddTaskScreen} />
+    <Tab.Screen name='Movies' component={MovieScreen} />
     <Tab.Screen name="Settings" component={SettingsScreen} />
   </Tab.Navigator>
 );

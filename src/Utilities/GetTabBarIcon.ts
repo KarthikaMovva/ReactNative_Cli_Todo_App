@@ -23,6 +23,9 @@ const getTabBarIcon = (routeName: string) => {
       case 'Settings':
         iconName = focused ? 'settings' : 'settings-outline';
         break;
+      case 'Movies':
+        iconName = focused ? 'film' : 'film-outline'
+        break;
       default:
         iconName = 'help-circle-outline';
     }
