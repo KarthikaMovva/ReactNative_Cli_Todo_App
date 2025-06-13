@@ -5,48 +5,85 @@ import {
   Text,
   StyleSheet,
   ActivityIndicator,
-  Image,
-  StatusBar,
+  Image
 } from 'react-native';
 import axiosInstance from '../Network/AxiosInstance';
 import { Movie } from '../Types/MovieList';
+import SearchBar from '../Components/SearchBar';
 import Colors from '../Utilities/Colors';
+import { useDebounce } from '../CustomHook/useDebounce';
+import { Endpoints } from '../Network/Endpoints';
 
 const MoviesScreen: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const [search, setsearch] = useState<string>('');
+  const debouncedSearch = useDebounce(search, 300);
 
-  const fetchTopRatedMovies = useCallback(
+   const fetchTopRatedMovies = useCallback(
     async (pageNum: number) => {
       try {
-        const response = await axiosInstance.get('/movie/top_rated', {
+        const response = await axiosInstance.get(Endpoints.movies, {
           params: { page: pageNum },
         });
 
         const fetchedMovies: Movie[] = response.data.results;
         const totalPages = response.data.total_pages;
 
-        setMovies((prev) => [...prev, ...fetchedMovies]);
+        setMovies((prevMovies) => {
+        const combined = [...prevMovies, ...fetchedMovies];
+        return combined.sort((a, b) => b.vote_average - a.vote_average);
+      });
         setHasMore(pageNum < totalPages);
         console.log(hasMore,"hasmore inside function")
       } catch (error) {
         console.error('Error fetching movies:', error);
       }
-    },
-    [hasMore]
-  );
+    },[hasMore]);
 
-  useEffect(() => {
-    fetchTopRatedMovies(page);
-  }, [page, fetchTopRatedMovies]);
+  const fetchSearchedMovies = useCallback(
+  async (query: string) => {
+    try {
+      const response = await axiosInstance.get(Endpoints.search, {
+        params: { query },
+      });
 
-  const handleEndReached = useCallback(() => {
-    if (hasMore) {
-      setPage((prev) => prev + 1);
+      const results: Movie[] = response.data.results;
+      const sortedResults = results.sort((a, b) => b.vote_average - a.vote_average);
+      setMovies(sortedResults);
+      setHasMore(false); 
+    } catch (error) {
+      console.error('Error searching movies:', error);
     }
-  }, [hasMore]);
+  },
+  []
+);
 
+
+useEffect(() => {
+  if (debouncedSearch.trim() === '') {
+    setMovies([]);
+    setPage(1);
+    fetchTopRatedMovies(1);
+  } else {
+    fetchSearchedMovies(debouncedSearch);
+  }
+}, [debouncedSearch, fetchTopRatedMovies, fetchSearchedMovies]);
+
+const handleEndReached = useCallback(() => {
+  if (hasMore && debouncedSearch.trim() === '') {
+    setPage((prevPage) => {
+      const nextPage = prevPage + 1;
+      fetchTopRatedMovies(nextPage);
+      return nextPage;
+    });
+  }
+}, [hasMore, debouncedSearch, fetchTopRatedMovies]);
+
+const handleChange = (text: string) => {
+  setsearch(text);
+};
 
   const renderItem = ({ item }: { item: Movie }) => (
     <View style={styles.card}>
@@ -79,14 +116,14 @@ const MoviesScreen: React.FC = () => {
   );
 
   const renderEmptyComponent = () => (
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>No movies found</Text>
-      </View>
+    <View style={styles.footer}>
+      <Text style={styles.footerText}>No movies found</Text>
+    </View>
   );
 
   return (
     <View style={styles.container}>
-      <StatusBar backgroundColor={Colors.MovieCardBackgroundcolor} barStyle="light-content" />
+      <SearchBar value={search} onChangeText={handleChange} placeholder="Search movies..." />
       <FlatList
         data={movies}
         renderItem={renderItem}

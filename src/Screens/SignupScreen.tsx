@@ -15,6 +15,7 @@ import Title from '../Components/Title';
 import { isValidEmail } from '../Utilities/IdAndMails';
 import Colors from '../Utilities/Colors';
 import { useContextvalues } from '../Auth/UseContext';
+import { Endpoints } from '../Network/Endpoints';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Signup'>;
 
@@ -60,10 +61,9 @@ const SignupScreen: React.FC<Props> = ({ navigation }) => {
     }
 
     try {
-      const response = await axiosInstance.get('/authentication');
+      const response = await axiosInstance.get(Endpoints.signup);
       const token = response.data.request_token;
       dispatch(signupUser({ email, password, token }));
-      navigation.navigate('HomeScreen');
     } catch (error: any) {
       console.error('API Error:', error);
       setwarningMessage(

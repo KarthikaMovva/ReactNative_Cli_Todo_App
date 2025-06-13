@@ -13,6 +13,7 @@ import CustomInput from '../Components/CustomInput';
 import Title from '../Components/Title';
 import CustomButton from '../Components/CustomButton';
 import axiosInstance from '../Network/AxiosInstance';
+import { Endpoints } from '../Network/Endpoints';
 import { useContextvalues } from '../Auth/UseContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
@@ -46,7 +47,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
     }
 
     try {
-      const response = await axiosInstance.get('/authentication');
+      const response = await axiosInstance.get(Endpoints.signup);
       const tokenFromAPI = response.data.request_token;
 
       const user = users.find(

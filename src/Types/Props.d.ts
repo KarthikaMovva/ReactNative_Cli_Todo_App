@@ -29,6 +29,7 @@ export interface SearchBarProps {
   placeholder?: string;
 }
 
+
 type Status = 'pending' | 'in-progress' | 'completed';
 
 export interface StatusPickerProps {
