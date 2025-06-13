@@ -7,6 +7,15 @@ export type RootStackParamList = {
   Drawer : undefined;
 };
 
+
+export type TabParamList = {
+  Home: undefined;
+  Movie: undefined;
+  Settings: undefined;
+  AddTask: undefined;
+  TopTabs: undefined;
+};
+
 export type RootDrawerParamList = {
   Tabs: undefined;
 };

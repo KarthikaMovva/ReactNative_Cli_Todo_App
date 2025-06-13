@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { generateUniqueId } from '../Utilities/GenerateId';
-import { TaskState, Task } from '../Types/Redux.Types';
+import { generateUniqueId } from '../Utilities/IdAndMails';
+import { TaskState, Task } from '../Types/Redux';
 
 const initialState: TaskState = {
   value: [],
@@ -17,9 +17,7 @@ const taskSlice = createSlice({
     updateTask: (state, action: PayloadAction<Task>) => {
       const index = state.value.findIndex(task => task.id === action.payload.id);
       if (index !== -1) {
-        if (state.value[index].userEmail === action.payload.userEmail) {
         state.value[index] = action.payload;
-        }
       }
     },
     deleteTask: (state, action: PayloadAction<string>) => {

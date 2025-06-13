@@ -1,12 +1,12 @@
 import React from 'react';
 import { Text, StyleSheet, View } from 'react-native';
-import { TitleProps } from '../Types/Props.Types';
+import { TitleProps } from '../Types/Props';
 import Colors from '../Utilities/Colors';
 
-const Title: React.FC<TitleProps> = ({ heading, style }) => {
+const Title: React.FC<TitleProps> = ({ heading, style, onPress }) => {
   return (
     <View>
-      <Text style={[styles.title, style]}>{heading}</Text>
+      <Text style={[styles.title, style]} onPress={onPress}>{heading}</Text>
     </View>
   );
 };

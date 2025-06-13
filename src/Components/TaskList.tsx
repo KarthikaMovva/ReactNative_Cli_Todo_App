@@ -1,10 +1,10 @@
 import React from 'react';
 import { Text, FlatList, TouchableOpacity, View, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { TaskListProps } from '../Types/Props.Types';
-import { Task }  from '../Types/Redux.Types';
+import { TaskListProps } from '../Types/Props';
+import { Task }  from '../Types/Redux';
 import Colors from '../Utilities/Colors';
-import { getStatusColor } from '../Utilities/GetStatusColor';
+import { getStatusColor } from '../Utilities/StatusAndColors';
 
 const TaskList: React.FC<TaskListProps> = ({ tasks, onTaskPress, onDeletePress, onEndReached }) => {
   const renderItem = ({ item }: { item: Task }) => (

@@ -3,3 +3,7 @@ export const generateUniqueId = (): string => {
   const randomPart = Math.random().toString(36).substring(2, 10);
   return `task-${timestamp}-${randomPart}`;
 };
+
+export const isValidEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+};

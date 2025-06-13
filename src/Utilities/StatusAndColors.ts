@@ -1,5 +1,10 @@
-import { TaskStatus } from "./Constants";
 import Colors from "./Colors";
+
+export enum TaskStatus {
+  PENDING = 'pending',
+  IN_PROGRESS = 'in progress',
+  DONE = 'done',
+}
 
 export const getStatusColor = (status: string): string => {
   switch (status) {

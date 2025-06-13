@@ -1,14 +1,14 @@
 import React from 'react';
 import { Modal, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { WarningModalProps } from "../Types/Props.Types"
+import { WarningModalProps } from "../Types/Props"
 import Colors from '../Utilities/Colors';
 
 const WarningModal: React.FC<WarningModalProps> = ({ visible, message, onClose, onConfirm }) => {
   return (
     <Modal visible={visible} transparent animationType="fade">
-      <View style={styles.overlay}>
-        <View style={styles.modalContainer}>
-          <Text style={styles.message}>{message}</Text>
+      <View style={styles.overlay}> 
+        <View style={styles.modalContainer}> 
+          <Text style={styles.message}>{message}</Text> 
 
           {onConfirm ? (
             <View style={styles.buttonRow}>
@@ -33,14 +33,14 @@ const WarningModal: React.FC<WarningModalProps> = ({ visible, message, onClose, 
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: Colors.modalOverlay,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: Colors.modalOverlay
   },
   modalContainer: {
-    backgroundColor: Colors.background,
     padding: 20,
-    borderRadius: 10,
+    borderRadius: 20,
+    backgroundColor : Colors.background,
     width: '80%',
     alignItems: 'center'
   },
@@ -48,7 +48,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginVertical: 20,
     textAlign: 'center',
-    color: Colors.darkText,
   },
   buttonRow: {
     flexDirection: 'row',
@@ -70,7 +69,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.cancelButton,
   },
   buttonText: {
-    color: Colors.background,
+    color: Colors.background, 
     fontWeight: 'bold',
   },
 });
