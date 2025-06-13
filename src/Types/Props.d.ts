@@ -1,4 +1,4 @@
-import { Task } from "./Redux.Types";
+import { Task } from "./Redux";
 import { GestureResponderEvent, TextStyle } from "react-native";
 
 export interface TaskListProps {
@@ -29,6 +29,8 @@ export interface SearchBarProps {
   placeholder?: string;
 }
 
+type Status = 'pending' | 'in-progress' | 'completed';
+
 export interface StatusPickerProps {
   selectedValue: string;
   onValueChange: (value: string) => void;
@@ -55,4 +57,11 @@ export interface SwitchTextProps {
 export interface TitleProps {
   heading: string;
   style?: TextStyle; 
+  onPress?: () => void;
 }
+
+export type ToggleSwitchProps = {
+  label: string;
+  value: boolean;
+  onValueChange: (value: boolean) => void;
+};

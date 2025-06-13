@@ -1,8 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { UserState, RegisteredUser } from '../Types/Redux.Types';
+import { UserState, RegisteredUser } from '../Types/Redux';
 
 const initialState: UserState = {
   users: [],
+  currentUser: null,
+  error : null
 };
 
 const userSlice = createSlice({
@@ -13,21 +15,33 @@ const userSlice = createSlice({
       const existingUser = state.users.find(user => user.email === action.payload.email);
       if (!existingUser) {
         state.users.push(action.payload);
+        state.currentUser = action.payload;
+        state.error = null;
       } else {
-        throw new Error('User already exists, please login instead.');
+        state.error = 'User already exists. Please login instead.';
       }
     },
     loginUser: (state, action: PayloadAction<{ email: string; password: string }>) => {
       const user = state.users.find(user => user.email === action.payload.email);
       if (!user) {
-        throw new Error('User not found, please sign up.');
+        state.error = 'User not found. Please sign up.';
+        state.currentUser = null;
+        return;
       }
       if (user.password !== action.payload.password) {
-        throw new Error('Incorrect password.');
+        state.error = 'Incorrect password.'
+        state.currentUser = null;
+        return;
       }
+      state.currentUser = user;
+      state.error = null;
     },
+     logoutUser: (state) => {
+      state.currentUser = null; 
+      state.error = null;       
+    }
   },
 });
 
-export const { signupUser, loginUser } = userSlice.actions;
+export const { signupUser, loginUser, logoutUser } = userSlice.actions;
 export default userSlice.reducer;

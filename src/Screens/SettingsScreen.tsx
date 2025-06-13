@@ -1,24 +1,31 @@
-import React from 'react';
-import { View, StyleSheet, StatusBar } from 'react-native';
-import Title from '../Components/Title';
-import Colors from '../Utilities/Colors'; 
+import React, { useState } from 'react';
+import { View, StyleSheet } from 'react-native';
+import ToggleSwitch from '../Components/ToggelSwitch';
+ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const SettingsScreen = () => {
+  const[isEnabled, setisEnabled] = useState<boolean>(false);
+
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
-      <Title heading='Settings'/>
+    <View>
+      <View style={styles.profileContainer}>
+      <Ionicons name="person-circle" size={130} color="#4F8EF7"/>
+      </View>
+    <View>
+      <ToggleSwitch
+        label='Turn on dark theme'
+        value={isEnabled}
+        onValueChange={(val) => setisEnabled(val)}
+      />
+    </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: Colors.lightGray, 
-    justifyContent: 'center',
-    alignItems: 'center',
+  profileContainer:{
+    alignItems : 'center',
+    paddingVertical : 20,
   }
 });
 

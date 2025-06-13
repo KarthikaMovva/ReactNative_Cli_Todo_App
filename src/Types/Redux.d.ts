@@ -3,7 +3,6 @@ export interface Task {
   title: string;
   description: string;
   status: string;
-  userEmail: string; 
 }
 
 export interface TaskState {
@@ -18,4 +17,6 @@ export interface RegisteredUser {
 
 export interface UserState {
   users: RegisteredUser[];
+  currentUser: RegisteredUser | null;
+  error: string | null;
 }

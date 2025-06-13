@@ -1,28 +1,20 @@
 import React from 'react';
-import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer';
-import { useAuth } from '../Auth/AuthContext';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import TabNavigator from './TabNavigator';
+import { RootDrawerParamList } from '../Types/Navigation';
+import DrawerContent from './DrawerContent'; 
 
-const Drawer = createDrawerNavigator();
+const Drawer = createDrawerNavigator<RootDrawerParamList>();
 
-const CustomDrawerContent = (props: any) => {
-  const { logout } = useAuth();
-
+const DrawerNavigator = () => {
   return (
-    <DrawerContentScrollView {...props}>
-      <DrawerItemList {...props} />
-      <DrawerItem label="Logout" onPress={logout} />
-    </DrawerContentScrollView>
+    <Drawer.Navigator
+      drawerContent={(props) => <DrawerContent {...props} />}
+      screenOptions={{ headerShown: false }}
+    >
+      <Drawer.Screen name="Tabs" component={TabNavigator} />
+    </Drawer.Navigator>
   );
 };
-
-const DrawerNavigator = () => (
-  <Drawer.Navigator
-    screenOptions={{ headerShown: false }}
-    drawerContent={(props) => <CustomDrawerContent {...props} />}
-  >
-    <Drawer.Screen name="Tabs" component={TabNavigator} />
-  </Drawer.Navigator>
-);
 
 export default DrawerNavigator;

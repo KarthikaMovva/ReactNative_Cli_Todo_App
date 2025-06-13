@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, TextInput, TouchableOpacity, Text, View, StyleSheet } from 'react-native';
-import { Task } from '../Types/Redux.Types';
+import { Task } from '../Types/Redux';
 import StatusPicker from './StatusPicker';
 import Colors from '../Utilities/Colors';
 

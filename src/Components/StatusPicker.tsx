@@ -9,8 +9,8 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 import Colors from '../Utilities/Colors';
-import { StatusPickerProps } from '../Types/Props.Types';
-import { TaskStatus } from '../Utilities/Constants';
+import { StatusPickerProps } from '../Types/Props';
+import { TaskStatus } from '../Utilities/StatusAndColors';
 import Ionicons from 'react-native-vector-icons/Ionicons'; 
 
 const StatusPicker: React.FC<StatusPickerProps> = ({ selectedValue, onValueChange }) => {
