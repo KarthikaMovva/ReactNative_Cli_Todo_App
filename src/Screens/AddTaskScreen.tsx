@@ -10,7 +10,8 @@ import Colors from '../Utilities/Colors';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../Types/Navigation';
 import { useNavigation } from '@react-navigation/native';
-import { useContextvalues } from '../Auth/UseContext';
+import { useContextvalues } from '../Auth/ModalContext';
+import { ThemeContext } from '../Auth/ThemeContext';
 
 const AddTaskScreen = () => {
   const [title, setTitle] = useState('');
@@ -18,10 +19,10 @@ const AddTaskScreen = () => {
   const [status, setStatus] = useState('pending');
   const currentUserEmail = useSelector((state: RootState) => state.users.currentUser);
   const { setshowWarning, setwarningMessage, setIsConfirm } = useContextvalues();
+  const { isDarkTheme } = ThemeContext();
   const dispatch = useDispatch();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   
-
   const handleAdd = () => {
     if (title.trim() && currentUserEmail) {
       dispatch(addTask({ title, description: description.trim() ? description : 'No description', status }));
@@ -46,7 +47,7 @@ const AddTaskScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles(isDarkTheme).container}>
       <CustomInput
         placeholder="Title"
         value={title}
@@ -66,11 +67,11 @@ const AddTaskScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const styles = (isDarkTheme:boolean)=>StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: Colors.background,
+    backgroundColor: isDarkTheme? Colors.darkTheme.darkBackground:Colors.background,
   }
 });
 

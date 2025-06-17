@@ -12,6 +12,7 @@ import { Movie } from '../Types/MovieList';
 import SearchBar from '../Components/SearchBar';
 import Colors from '../Utilities/Colors';
 import { useDebounce } from '../CustomHook/useDebounce';
+import { ThemeContext } from '../Auth/ThemeContext';
 import { Endpoints } from '../Network/Endpoints';
 
 const MoviesScreen: React.FC = () => {
@@ -20,6 +21,7 @@ const MoviesScreen: React.FC = () => {
   const [hasMore, setHasMore] = useState(true);
   const [search, setsearch] = useState<string>('');
   const debouncedSearch = useDebounce(search, 300);
+  const { isDarkTheme } = ThemeContext();
 
    const fetchTopRatedMovies = useCallback(
     async (pageNum: number) => {
@@ -86,20 +88,20 @@ const handleChange = (text: string) => {
 };
 
   const renderItem = ({ item }: { item: Movie }) => (
-    <View style={styles.card}>
+    <View style={styles(isDarkTheme).card}>
       <Image
         source={{
           uri: item.poster_path
             ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
             : `https://placehold.co/500x750/cccccc/333333?text=No+Image`,
         }}
-        style={styles.poster}
+        style={styles(isDarkTheme).poster}
       />
-      <View style={styles.details}>
-        <Text style={styles.title}>{item.title}</Text>
-        <Text style={styles.rating}>Rating: {item.vote_average.toFixed(1)} / 10</Text>
-        <Text style={styles.release}>Release: {item.release_date}</Text>
-        <Text style={styles.overview} numberOfLines={3}>
+      <View style={styles(isDarkTheme).details}>
+        <Text style={styles(isDarkTheme).title}>{item.title}</Text>
+        <Text style={styles(isDarkTheme).rating}>Rating: {item.vote_average.toFixed(1)} / 10</Text>
+        <Text style={styles(isDarkTheme).release}>Release: {item.release_date}</Text>
+        <Text style={styles(isDarkTheme).overview} numberOfLines={3}>
           {item.overview || 'No overview available.'}
         </Text>
       </View>
@@ -108,27 +110,27 @@ const handleChange = (text: string) => {
 
   const renderFooter = () => (
     movies.length > 0 ? (
-      <View style={styles.footer}>
+      <View style={styles(isDarkTheme).footer}>
         <ActivityIndicator size="large" color="#007bff" />
-        <Text style={styles.footerText}>Loading more movies...</Text>
+        <Text style={styles(isDarkTheme).footerText}>Loading more movies...</Text>
       </View>
     ) : null
   );
 
   const renderEmptyComponent = () => (
-    <View style={styles.footer}>
-      <Text style={styles.footerText}>No movies found</Text>
+    <View style={styles(isDarkTheme).footer}>
+      <Text style={styles(isDarkTheme).footerText}>No movies found</Text>
     </View>
   );
 
   return (
-    <View style={styles.container}>
+    <View style={styles(isDarkTheme).container}>
       <SearchBar value={search} onChangeText={handleChange} placeholder="Search movies..." />
       <FlatList
         data={movies}
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={styles.content}
+        contentContainerStyle={styles(isDarkTheme).content}
         onEndReached={handleEndReached}
         onEndReachedThreshold={0.4}
         ListFooterComponent={renderFooter}
@@ -138,10 +140,10 @@ const handleChange = (text: string) => {
   );
 };
 
-const styles = StyleSheet.create({
+const styles = (isDarkTheme:boolean) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.MovieScreenBackground,
+    backgroundColor: isDarkTheme? Colors.darkTheme.darkBackground : Colors.background,
   },
   content: {
     padding: 10,
@@ -149,7 +151,7 @@ const styles = StyleSheet.create({
   },
   card: {
     flexDirection: 'row',
-    backgroundColor: Colors.MovieCardBackgroundcolor,
+    backgroundColor: isDarkTheme? Colors.darkTheme.cardsBackground : Colors.MovieCardBackgroundcolor,
     borderRadius: 12,
     marginVertical: 8,
     padding: 15,
@@ -166,19 +168,19 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: Colors.MovieTitle,
+    color: isDarkTheme? Colors.loginBackground: Colors.MovieTitle,
   },
   rating: {
-    color: Colors.MovieRating,
+    color: isDarkTheme? Colors.loginBackground: Colors.MovieRating,
     marginVertical: 2,
   },
   release: {
-    color: Colors.MovieRelease,
+    color: isDarkTheme? Colors.loginBackground: Colors.MovieRelease,
     marginBottom: 5,
   },
   overview: {
     fontSize: 13,
-    color: Colors.MovieOverview,
+    color: isDarkTheme? Colors.loginBackground: Colors.MovieOverview,
   },
   footer: {
     paddingVertical: 20,
@@ -186,7 +188,7 @@ const styles = StyleSheet.create({
   },
   footerText: {
     marginTop: 10,
-    color: Colors.MovieFooter,
+    color: isDarkTheme? Colors.loginBackground: Colors.MovieFooter,
   },
 });
 

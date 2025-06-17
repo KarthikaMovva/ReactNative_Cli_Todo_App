@@ -1,6 +1,6 @@
 import React from 'react';
 import WarningModal from './WarningModal';
-import { useContextvalues } from '../Auth/UseContext';
+import { useContextvalues } from '../Auth/ModalContext';
 
 const GlobalWarning: React.FC = () => {
   const {

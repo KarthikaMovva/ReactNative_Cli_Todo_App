@@ -14,7 +14,7 @@ import Title from '../Components/Title';
 
 import { isValidEmail } from '../Utilities/IdAndMails';
 import Colors from '../Utilities/Colors';
-import { useContextvalues } from '../Auth/UseContext';
+import { useContextvalues } from '../Auth/ModalContext';
 import { Endpoints } from '../Network/Endpoints';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Signup'>;

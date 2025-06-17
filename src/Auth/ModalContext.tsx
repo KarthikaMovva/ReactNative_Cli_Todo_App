@@ -1,21 +1,7 @@
-import React, { createContext, useState, useContext, ReactNode } from "react";
+import React, { createContext, useState, useContext } from "react";
+import { ModalContextType, ProviderProps } from "../Types/Context";
 
-interface ContextType {
-  warningMessage: string;
-  setwarningMessage: React.Dispatch<React.SetStateAction<string>>;
-  showWarning: boolean;
-  setshowWarning: React.Dispatch<React.SetStateAction<boolean>>;
-  onConfirm?: () => void;
-  setOnConfirm: React.Dispatch<React.SetStateAction<(() => void) | undefined>>;
-  isConfirm: boolean;
-  setIsConfirm: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-const GlobalContext = createContext<ContextType | undefined>(undefined);
-
-interface ProviderProps {
-  children: ReactNode;
-}
+const GlobalContext = createContext<ModalContextType | undefined>(undefined);
 
 export const StateProvider: React.FC<ProviderProps> = ({ children }) => {
   const [warningMessage, setwarningMessage] = useState<string>('');
@@ -23,7 +9,7 @@ export const StateProvider: React.FC<ProviderProps> = ({ children }) => {
   const [onConfirm, setOnConfirm] = useState<(() => void) | undefined>(undefined);
   const [isConfirm, setIsConfirm] = useState<boolean>(false);
 
-  const Contextvalues: ContextType = {
+  const Contextvalues: ModalContextType = {
     warningMessage,
     setwarningMessage,
     showWarning,
@@ -41,7 +27,7 @@ export const StateProvider: React.FC<ProviderProps> = ({ children }) => {
   );
 };
 
-export const useContextvalues = (): ContextType => {
+export const useContextvalues = (): ModalContextType => {
   const context = useContext(GlobalContext);
 
   if (context === undefined) {

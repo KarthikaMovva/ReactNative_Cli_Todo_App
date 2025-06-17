@@ -15,7 +15,7 @@ export interface WarningModalProps {
   onConfirm?: () => void;
 }
 
-export interface EditTaskModalProps {
+export interface EditModalProps {
   visible: boolean;
   task: Task | null;
   onClose: () => void;
@@ -65,4 +65,5 @@ export type ToggleSwitchProps = {
   label: string;
   value: boolean;
   onValueChange: (value: boolean) => void;
+  labelStyle? : TextStyle;
 };

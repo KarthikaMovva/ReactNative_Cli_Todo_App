@@ -2,26 +2,30 @@ import React from 'react';
 import { Modal, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { WarningModalProps } from "../Types/Props"
 import Colors from '../Utilities/Colors';
+import { ThemeContext } from '../Auth/ThemeContext';
 
 const WarningModal: React.FC<WarningModalProps> = ({ visible, message, onClose, onConfirm }) => {
+
+  const { isDarkTheme } = ThemeContext();
+
   return (
     <Modal visible={visible} transparent animationType="fade">
-      <View style={styles.overlay}> 
-        <View style={styles.modalContainer}> 
-          <Text style={styles.message}>{message}</Text> 
+      <View style={styles(isDarkTheme).overlay}> 
+        <View style={styles(isDarkTheme).modalContainer}> 
+          <Text style={styles(isDarkTheme).message}>{message}</Text> 
 
           {onConfirm ? (
-            <View style={styles.buttonRow}>
-              <TouchableOpacity onPress={onConfirm} style={[styles.button, styles.confirm]}>
-                <Text style={styles.buttonText}>Yes</Text>
+            <View style={styles(isDarkTheme).buttonRow}>
+              <TouchableOpacity onPress={onConfirm} style={[styles(isDarkTheme).button, styles(isDarkTheme).confirm]}>
+                <Text style={styles(isDarkTheme).buttonText}>Yes</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={onClose} style={[styles.button, styles.cancel]}>
-                <Text style={styles.buttonText}>Cancel</Text>
+              <TouchableOpacity onPress={onClose} style={[styles(isDarkTheme).button, styles(isDarkTheme).cancel]}>
+                <Text style={styles(isDarkTheme).buttonText}>Cancel</Text>
               </TouchableOpacity>
             </View>
           ) : (
-            <TouchableOpacity onPress={onClose} style={[styles.button, styles.confirm]}>
-              <Text style={styles.buttonText}>OK</Text>
+            <TouchableOpacity onPress={onClose} style={[styles(isDarkTheme).button, styles(isDarkTheme).confirm]}>
+              <Text style={styles(isDarkTheme).buttonText}>OK</Text>
             </TouchableOpacity>
           )}
         </View>
@@ -30,7 +34,7 @@ const WarningModal: React.FC<WarningModalProps> = ({ visible, message, onClose, 
   );
 };
 
-const styles = StyleSheet.create({
+const styles = (isDarkTheme:boolean) => StyleSheet.create({
   overlay: {
     flex: 1,
     justifyContent: 'center',
@@ -40,7 +44,7 @@ const styles = StyleSheet.create({
   modalContainer: {
     padding: 20,
     borderRadius: 20,
-    backgroundColor : Colors.background,
+    backgroundColor : isDarkTheme? Colors.darkTheme.cardsBackground: Colors.background,
     width: '80%',
     alignItems: 'center'
   },
@@ -48,6 +52,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginVertical: 20,
     textAlign: 'center',
+    color : isDarkTheme? Colors.background: Colors.darkText
   },
   buttonRow: {
     flexDirection: 'row',
@@ -66,7 +71,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primaryButton,
   },
   cancel: {
-    backgroundColor: Colors.cancelButton,
+    backgroundColor: isDarkTheme? "red": Colors.cancelButton,
   },
   buttonText: {
     color: Colors.background, 

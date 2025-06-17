@@ -12,9 +12,11 @@ import Colors from '../Utilities/Colors';
 import { StatusPickerProps } from '../Types/Props';
 import { TaskStatus } from '../Utilities/StatusAndColors';
 import Ionicons from 'react-native-vector-icons/Ionicons'; 
+import { ThemeContext } from '../Auth/ThemeContext';
 
 const StatusPicker: React.FC<StatusPickerProps> = ({ selectedValue, onValueChange }) => {
   const [modalVisible, setModalVisible] = useState(false);
+  const { isDarkTheme } = ThemeContext();
 
   const handleSelect = (value: string) => {
     onValueChange(value);
@@ -24,10 +26,10 @@ const StatusPicker: React.FC<StatusPickerProps> = ({ selectedValue, onValueChang
   return (
     <View>
       <TouchableOpacity
-        style={styles.pickerButton}
+        style={styles(isDarkTheme).pickerButton}
         onPress={() => setModalVisible(true)}
       >
-        <Text style={styles.pickerButtonText}>
+        <Text style={styles(isDarkTheme).pickerButtonText}>
           {selectedValue || 'Select status'}
         </Text>
       </TouchableOpacity>
@@ -39,15 +41,15 @@ const StatusPicker: React.FC<StatusPickerProps> = ({ selectedValue, onValueChang
         onRequestClose={() => setModalVisible(false)}
       >
         <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
-          <View style={styles.modalOverlay}>
+          <View style={styles(isDarkTheme).modalOverlay}>
             <TouchableWithoutFeedback>
-              <View style={styles.modalContent}>
+              <View style={styles(isDarkTheme).modalContent}>
                 <FlatList
                   data={Object.values(TaskStatus)}
                   keyExtractor={(item) => item}
                   renderItem={({ item }) => (
                     <TouchableOpacity
-                      style={styles.option}
+                      style={styles(isDarkTheme).option}
                       onPress={() => handleSelect(item)}
                     >
                       <Ionicons
@@ -58,9 +60,9 @@ const StatusPicker: React.FC<StatusPickerProps> = ({ selectedValue, onValueChang
                         }
                         size={20}
                         color={Colors.primaryButton}
-                        style={styles.radioIcon}
+                        style={styles(isDarkTheme).radioIcon}
                       />
-                      <Text style={styles.optionText}>{item}</Text>
+                      <Text style={styles(isDarkTheme).optionText}>{item}</Text>
                     </TouchableOpacity>
                   )}
                 />
@@ -73,16 +75,16 @@ const StatusPicker: React.FC<StatusPickerProps> = ({ selectedValue, onValueChang
   );
 };
 
-const styles = StyleSheet.create({
+const styles = (isDarkTheme:boolean)=>StyleSheet.create({
   pickerButton: {
-    backgroundColor: Colors.lightGray,
+    backgroundColor: isDarkTheme? Colors.darkTheme.cardsBackground: Colors.lightGray,
     padding: 12,
     borderRadius: 8,
     marginVertical: 15,
   },
   pickerButtonText: {
     fontSize: 16,
-    color: Colors.darkText,
+    color: isDarkTheme? Colors.loginBackground: Colors.darkText,
   },
   modalOverlay: {
     flex: 1,
@@ -91,7 +93,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalContent: {
-    backgroundColor: Colors.background,
+    backgroundColor: isDarkTheme? Colors.darkTheme.cardsBackground: Colors.background,
     borderRadius: 10,
     width: '80%',
     paddingVertical: 10,
@@ -107,7 +109,7 @@ const styles = StyleSheet.create({
   },
   optionText: {
     fontSize: 16,
-    color: Colors.darkText,
+    color: isDarkTheme? Colors.loginBackground: Colors.darkText,
   },
 });
 
