@@ -1,7 +1,7 @@
 import React from 'react';
 import { TextInput, StyleSheet } from 'react-native';
 import Colors from '../Utilities/Colors';
-import { CustomInputProps } from '../Types/Props.Types';
+import { CustomInputProps } from '../Types/Props';
 
 const CustomInput: React.FC<CustomInputProps> = ({
   value,

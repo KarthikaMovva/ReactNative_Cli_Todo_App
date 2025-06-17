@@ -17,13 +17,13 @@ const getTabBarIcon = (routeName: string) => {
       case 'Home':
         iconName = focused ? 'home' : 'home-outline';
         break;
-      case 'Add Task':
+      case 'AddTask':
         iconName = focused ? 'add-circle' : 'add-circle-outline';
         break;
       case 'Settings':
         iconName = focused ? 'settings' : 'settings-outline';
         break;
-      case 'Movies':
+      case 'Movie':
         iconName = focused ? 'film' : 'film-outline'
         break;
       default:

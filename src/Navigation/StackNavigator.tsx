@@ -1,20 +1,19 @@
-import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { useAuth } from '../Auth/AuthContext';
-
-import DrawerNavigator from './DrawerNavigator';
 import LoginScreen from '../Screens/LoginScreen';
 import SignupScreen from '../Screens/SignupScreen';
-import { RootStackParamList } from '../Types/Navigation.Types';
+import DrawerNavigator from './DrawerNavigator'; 
+import { useSelector } from 'react-redux';
+import { RootStackParamList } from '../Types/Navigation';
+import { RootState } from '../Redux/Store';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const StackNavigator = () => {
-  const { isLoggedIn } = useAuth();
+  const currentUser = useSelector((state: RootState) => state.users.currentUser);
 
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {isLoggedIn ? (
+      {currentUser ? (
         <Stack.Screen name="Drawer" component={DrawerNavigator} />
       ) : (
         <>
