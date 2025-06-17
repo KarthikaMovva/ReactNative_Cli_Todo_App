@@ -57,6 +57,7 @@ android {
 
 dependencies {
     implementation("com.facebook.react:react-android")
+    implementation("androidx.activity:activity:1.9.+")
     implementation 'com.facebook.fbjni:fbjni:0.2.2'
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")

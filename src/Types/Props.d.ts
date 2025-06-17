@@ -23,6 +23,13 @@ export interface EditModalProps {
   onSave: () => void;
 }
 
+export interface ImageUploadProps{
+  visible : boolean;
+  onClose: ()=>void;
+  openCamera: ()=>void;
+  openGallery: ()=>void;
+}
+
 export interface SearchBarProps {
   value: string;
   onChangeText: (text: string) => void;

@@ -20,7 +20,7 @@ const styles = (isDarkTheme:boolean) => StyleSheet.create({
     fontWeight: '700',
     paddingVertical: 20,
     textAlign: 'center',
-    color: isDarkTheme? Colors.loginBackground: Colors.darkText,
+    color: isDarkTheme? Colors.background: Colors.darkText,
   },
 });
 

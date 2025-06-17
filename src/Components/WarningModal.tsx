@@ -28,6 +28,7 @@ const WarningModal: React.FC<WarningModalProps> = ({ visible, message, onClose, 
               <Text style={styles(isDarkTheme).buttonText}>OK</Text>
             </TouchableOpacity>
           )}
+          
         </View>
       </View>
     </Modal>

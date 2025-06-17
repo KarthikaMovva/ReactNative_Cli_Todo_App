@@ -32,7 +32,7 @@ const TabNavigator = () => {
           tabBarInactiveTintColor: 'gray',
           tabBarStyle: styles(isDarkTheme).background,
           headerShown: true,
-          headerStyle: styles(isDarkTheme).header,
+          headerStyle: styles(isDarkTheme).background,
           headerTitleStyle: styles(isDarkTheme).title
         })}
       >
@@ -48,10 +48,6 @@ const TabNavigator = () => {
 const styles = (isDarkTheme:boolean) => StyleSheet.create({
   background:{ 
     backgroundColor: isDarkTheme ? Colors.darkTheme.tabsColor : Colors.background, 
-  },
-  header:{
-    backgroundColor: isDarkTheme ? Colors.darkTheme.tabsColor : Colors.background,
-    color: isDarkTheme ? "white" : "black"
   },
   title:{
     color: isDarkTheme ? "white" : "black"

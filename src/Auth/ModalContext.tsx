@@ -17,7 +17,7 @@ export const StateProvider: React.FC<ProviderProps> = ({ children }) => {
     onConfirm,
     setOnConfirm,
     isConfirm,
-    setIsConfirm
+    setIsConfirm,
   };
 
   return (
