@@ -1,12 +1,14 @@
 import React from 'react';
 import { View, Text, Switch, StyleSheet } from 'react-native';
 import { ToggleSwitchProps } from '../Types/Props';
+import { ThemeContext } from '../Auth/ThemeContext';
 
 
 const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ label, value, onValueChange }) => {
+  const { isDarkTheme } = ThemeContext();
   return (
-    <View style={styles.container}>
-      <Text style={styles.label}>{label}</Text>
+    <View style={styles(isDarkTheme).container}>
+      <Text style={styles(isDarkTheme).label}>{label}</Text>
       <Switch
         value={value}
         onValueChange={onValueChange}
@@ -17,7 +19,7 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ label, value, onValueChange
   );
 };
 
-const styles = StyleSheet.create({
+const styles = (isDarkTheme: boolean) => StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -26,6 +28,7 @@ const styles = StyleSheet.create({
   label: {
     marginHorizontal: 10,
     fontSize: 16,
+    color: isDarkTheme ? "white" : "black"
   },
 });
 

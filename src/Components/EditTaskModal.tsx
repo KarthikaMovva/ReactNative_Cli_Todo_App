@@ -1,34 +1,28 @@
 import React from 'react';
 import { Modal, TextInput, TouchableOpacity, Text, View, StyleSheet } from 'react-native';
-import { Task } from '../Types/Redux';
+import { EditModalProps } from '../Types/Props';
 import StatusPicker from './StatusPicker';
 import Colors from '../Utilities/Colors';
+import { ThemeContext } from '../Auth/ThemeContext';
 
-interface Props {
-  visible: boolean;
-  task: Task | null;
-  onClose: () => void;
-  onChange: (task: Task | null) => void;
-  onSave: () => void;
-}
-
-const EditTaskModal: React.FC<Props> = ({ visible, task, onClose, onChange, onSave }) => {
+const EditTaskModal: React.FC<EditModalProps> = ({ visible, task, onClose, onChange, onSave }) => {
+  const { isDarkTheme } = ThemeContext();
   if (!task) return null;
 
   return (
     <Modal visible={visible} animationType="slide">
-      <View style={styles.container}>
+      <View style={styles(isDarkTheme).container}>
         <TextInput
-          style={styles.input}
+          style={styles(isDarkTheme).input}
           placeholder="Title"
-          placeholderTextColor={Colors.mediumText}
+          placeholderTextColor={isDarkTheme? Colors.loginBackground: Colors.mediumText}
           value={task.title}
           onChangeText={text => onChange({ ...task, title: text })}
         />
         <TextInput
-          style={styles.input}
+          style={styles(isDarkTheme).input}
           placeholder="Description"
-          placeholderTextColor={Colors.mediumText}
+          placeholderTextColor={isDarkTheme? Colors.loginBackground: Colors.mediumText}
           value={task.description}
           onChangeText={text => onChange({ ...task, description: text })}
         />
@@ -37,12 +31,12 @@ const EditTaskModal: React.FC<Props> = ({ visible, task, onClose, onChange, onSa
           onValueChange={status => onChange({ ...task, status })}
         />
 
-        <View style={styles.buttonRow}>
-          <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-            <Text style={styles.buttonText}>Cancel</Text>
+        <View style={styles(isDarkTheme).buttonRow}>
+          <TouchableOpacity style={styles(isDarkTheme).closeButton} onPress={onClose}>
+            <Text style={styles(isDarkTheme).buttonText}>Cancel</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.saveButton} onPress={onSave}>
-            <Text style={styles.buttonText}>Save</Text>
+          <TouchableOpacity style={styles(isDarkTheme).saveButton} onPress={onSave}>
+            <Text style={styles(isDarkTheme).buttonText}>Save</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -50,20 +44,20 @@ const EditTaskModal: React.FC<Props> = ({ visible, task, onClose, onChange, onSa
   );
 };
 
-const styles = StyleSheet.create({
+const styles = (isDarkTheme:boolean)=>StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     padding: 20,
-    backgroundColor: Colors.background,
+    backgroundColor: isDarkTheme? Colors.darkTheme.darkBackground: Colors.background,
   },
   input: {
-    backgroundColor: Colors.lightGray,
+    backgroundColor: isDarkTheme? Colors.darkTheme.cardsBackground: Colors.lightGray,
     padding: 12,
     borderRadius: 8,
     marginVertical: 10,
     fontSize: 16,
-    color: Colors.darkText,
+    color: isDarkTheme? Colors.loginBackground: Colors.darkText,
   },
   buttonRow: {
     flexDirection: 'row',

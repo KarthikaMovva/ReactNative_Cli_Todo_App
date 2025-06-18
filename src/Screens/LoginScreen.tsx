@@ -14,7 +14,7 @@ import Title from '../Components/Title';
 import CustomButton from '../Components/CustomButton';
 import axiosInstance from '../Network/AxiosInstance';
 import { Endpoints } from '../Network/Endpoints';
-import { useContextvalues } from '../Auth/UseContext';
+import { useContextvalues } from '../Auth/ModalContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 

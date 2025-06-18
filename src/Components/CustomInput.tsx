@@ -2,6 +2,7 @@ import React from 'react';
 import { TextInput, StyleSheet } from 'react-native';
 import Colors from '../Utilities/Colors';
 import { CustomInputProps } from '../Types/Props';
+import { ThemeContext } from '../Auth/ThemeContext';
 
 const CustomInput: React.FC<CustomInputProps> = ({
   value,
@@ -10,11 +11,12 @@ const CustomInput: React.FC<CustomInputProps> = ({
   secureTextEntry = false, 
   ...rest
 }) => {
+  const { isDarkTheme } = ThemeContext();
   return (
     <TextInput
-      style={styles.input}
+      style={styles(isDarkTheme).input}
       placeholder={placeholder}
-      placeholderTextColor={Colors.mediumText}
+      placeholderTextColor={isDarkTheme? Colors.loginBackground: Colors.mediumText}
       value={value}
       onChangeText={onChangeText}
       secureTextEntry={secureTextEntry}
@@ -23,16 +25,16 @@ const CustomInput: React.FC<CustomInputProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const styles = (isDarkTheme:boolean) => StyleSheet.create({
   input: {
-    backgroundColor: Colors.loginBackground,
+    backgroundColor: isDarkTheme? Colors.darkTheme.cardsBackground: Colors.loginBackground,
     borderColor: Colors.signupInputBorder,
     borderWidth: 1,
     padding: 12,
     borderRadius: 8,
     marginVertical: 15,
     fontSize: 16,
-    color: Colors.darkText,
+    color: isDarkTheme? Colors.loginBackground: Colors.darkText,
   },
 });
 

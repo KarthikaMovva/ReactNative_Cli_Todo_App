@@ -7,6 +7,7 @@ import { RootStackParamList } from '../Types/Navigation';
 import { RootState } from '../Redux/store';
 import { signupUser } from '../Redux/UserSlice';
 import axiosInstance from '../Network/AxiosInstance';
+import Profile from "../Assets/Profile.png";
 
 import CustomInput from '../Components/CustomInput';
 import CustomButton from '../Components/CustomButton';
@@ -14,7 +15,7 @@ import Title from '../Components/Title';
 
 import { isValidEmail } from '../Utilities/IdAndMails';
 import Colors from '../Utilities/Colors';
-import { useContextvalues } from '../Auth/UseContext';
+import { useContextvalues } from '../Auth/ModalContext';
 import { Endpoints } from '../Network/Endpoints';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Signup'>;
@@ -63,7 +64,7 @@ const SignupScreen: React.FC<Props> = ({ navigation }) => {
     try {
       const response = await axiosInstance.get(Endpoints.signup);
       const token = response.data.request_token;
-      dispatch(signupUser({ email, password, token }));
+      dispatch(signupUser({ email, password, token, profileImage: Profile }));
     } catch (error: any) {
       console.error('API Error:', error);
       setwarningMessage(

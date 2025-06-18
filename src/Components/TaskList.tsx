@@ -5,24 +5,28 @@ import { TaskListProps } from '../Types/Props';
 import { Task }  from '../Types/Redux';
 import Colors from '../Utilities/Colors';
 import { getStatusColor } from '../Utilities/StatusAndColors';
+import { ThemeContext } from '../Auth/ThemeContext';
 
 const TaskList: React.FC<TaskListProps> = ({ tasks, onTaskPress, onDeletePress, onEndReached }) => {
+
+  const { isDarkTheme } = ThemeContext();
+
   const renderItem = ({ item }: { item: Task }) => (
     <TouchableOpacity
-      style={[styles.taskItem, { backgroundColor: getStatusColor(item.status) }]}
+      style={[styles(isDarkTheme).taskItem, { backgroundColor: getStatusColor(isDarkTheme,item.status) }]}
       onPress={() => onTaskPress(item)}
       activeOpacity={0.8}
     >
       <View>
-        <Text style={styles.taskTitle}>{item.title}</Text>
-        <Text style={styles.taskDescription}>{item.description}</Text>
-        <Text style={styles.taskStatus}>Status: {item.status}</Text>
+        <Text style={styles(isDarkTheme).taskTitle}>{item.title}</Text>
+        <Text style={styles(isDarkTheme).taskDescription}>{item.description}</Text>
+        <Text style={styles(isDarkTheme).taskStatus}>Status: {item.status}</Text>
       </View>
       <TouchableOpacity
-        style={styles.deleteIcon}
+        style={styles(isDarkTheme).deleteIcon}
         onPress={() => onDeletePress(item)}
       >
-        <Icon name="delete" size={25} color={Colors.deleteIconColor} />
+        <Icon name="delete" size={25} color={isDarkTheme? Colors.loginBackground: Colors.deleteIconColor} />
       </TouchableOpacity>
     </TouchableOpacity>
   );
@@ -33,9 +37,9 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onTaskPress, onDeletePress, 
         data={tasks}
         keyExtractor={item => item.id}
         renderItem={renderItem}
-        ListEmptyComponent={<Text style={styles.emptyText}>No tasks found.</Text>}
+        ListEmptyComponent={<Text style={styles(isDarkTheme).emptyText}>No tasks found.</Text>}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={tasks.length === 0 ? styles.emptyContainer : undefined}
+        contentContainerStyle={tasks.length === 0 ? styles(isDarkTheme).emptyContainer : undefined}
         onEndReached={onEndReached}
         onEndReachedThreshold={0.5}
       />
@@ -44,7 +48,7 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onTaskPress, onDeletePress, 
 };
 
 
-const styles = StyleSheet.create({
+const styles = (isDarkTheme:boolean)=>StyleSheet.create({
   taskItem: {
     padding: 15,
     marginVertical: 8,
@@ -54,17 +58,17 @@ const styles = StyleSheet.create({
   taskTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: Colors.darkText,
+    color: isDarkTheme? Colors.loginBackground: Colors.darkText,
   },
   taskDescription: {
     marginVertical: 5,
     fontSize: 14,
-    color: Colors.darkText,
+    color: isDarkTheme? Colors.loginBackground: Colors.darkText,
   },
   taskStatus: {
     marginVertical: 5,
     fontSize: 13,
-    color: Colors.mediumText,
+    color: isDarkTheme? Colors.loginBackground: Colors.mediumText,
   },
   deleteIcon: {
     position: 'absolute',
@@ -76,7 +80,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginVertical: 30,
     fontSize: 16,
-    color: Colors.lightText,
+    color: isDarkTheme? Colors.loginBackground: Colors.lightText,
   },
   emptyContainer: {
     flexGrow: 1,

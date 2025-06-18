@@ -15,12 +15,19 @@ export interface WarningModalProps {
   onConfirm?: () => void;
 }
 
-export interface EditTaskModalProps {
+export interface EditModalProps {
   visible: boolean;
   task: Task | null;
   onClose: () => void;
   onChange: (task: Task | null) => void;
   onSave: () => void;
+}
+
+export interface ImageUploadProps{
+  visible : boolean;
+  onClose: ()=>void;
+  openCamera: ()=>void;
+  openGallery: ()=>void;
 }
 
 export interface SearchBarProps {
@@ -65,4 +72,5 @@ export type ToggleSwitchProps = {
   label: string;
   value: boolean;
   onValueChange: (value: boolean) => void;
+  labelStyle? : TextStyle;
 };

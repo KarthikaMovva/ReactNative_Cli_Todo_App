@@ -27,7 +27,17 @@ const Colors = {
   MovieRelease : '#718096',
   MovieOverview : '#4a5568',
   MovieFooter : '#4a5568',
-  MovieScreenBackground : '#f0f2f5'
+  MovieScreenBackground : '#f0f2f5',
+
+  darkTheme : {
+    darkBackground : "#000000" ,
+    cardsBackground : "#4d4c4c",
+    pendingBackground : "#9e0826",
+    doneBackground : "#046424",
+    progressBackground : "#728101",
+    tabsColor : "#2c2c2c",
+    logout : "#d8050f"
+  }
 };
 
 export default Colors;

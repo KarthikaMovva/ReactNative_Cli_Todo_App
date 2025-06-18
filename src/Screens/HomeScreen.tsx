@@ -6,7 +6,8 @@ import { RootState } from '../Redux/Store';
 import { updateTask, deleteTask } from '../Redux/TaskSlice';
 import { Task } from '../Types/Redux';
 import Colors from '../Utilities/Colors';
-import { useContextvalues } from '../Auth/UseContext';
+import { useContextvalues } from '../Auth/ModalContext';
+import { ThemeContext } from '../Auth/ThemeContext';
 
 import SearchBar from '../Components/SearchBar';
 import TaskList from '../Components/TaskList';
@@ -21,6 +22,7 @@ const HomeScreen: React.FC = () => {
     setIsConfirm,
     setOnConfirm,
   } = useContextvalues();
+  const { isDarkTheme } = ThemeContext();
 
   const [search, setSearch] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
@@ -98,8 +100,8 @@ useEffect(() => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.contentContainer}>
+    <View style={styles(isDarkTheme).container}>
+      <View style={styles(isDarkTheme).contentContainer}>
         <SearchBar value={search} onChangeText={setSearch} placeholder="Search tasks..." />
         <TaskList
           tasks={visibleTasks}
@@ -119,11 +121,11 @@ useEffect(() => {
   );
 };
 
-const styles = StyleSheet.create({
+const styles = (isDarkTheme:boolean) => StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: Colors.lightGray,
+    backgroundColor: isDarkTheme? Colors.darkTheme.darkBackground:Colors.background,
   },
   contentContainer: {
     flex: 1
