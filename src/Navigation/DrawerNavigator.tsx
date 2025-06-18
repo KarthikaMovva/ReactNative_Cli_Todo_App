@@ -5,16 +5,17 @@ import { RootDrawerParamList } from '../Types/Navigation';
 import DrawerContent from './DrawerContent'; 
 import { ThemeContext } from '../Auth/ThemeContext';
 import { StyleSheet } from 'react-native';
+import { AppColorsType } from '../Utilities/Colors';
 
 const Drawer = createDrawerNavigator<RootDrawerParamList>();
 
 const DrawerNavigator = () => {
-  const {isDarkTheme} = ThemeContext();
+  const {requiredColors} = ThemeContext();
   return (
     <Drawer.Navigator
       drawerContent={(props) => <DrawerContent {...props} />}
       screenOptions={{ headerShown: false,
-        drawerStyle: styles(isDarkTheme).background
+        drawerStyle: styles(requiredColors).background
        }}
     >
       <Drawer.Screen name="Tabs" component={TabNavigator} />
@@ -22,12 +23,12 @@ const DrawerNavigator = () => {
   );
 };
 
-const styles = (isDarkTheme:boolean) => StyleSheet.create({
+const styles = (requiredColors:AppColorsType) => StyleSheet.create({
 
   background:{
-    backgroundColor : isDarkTheme? "black":"white"
-  }
+    backgroundColor : requiredColors.background,
+  },
 
-})
+});
 
 export default DrawerNavigator;

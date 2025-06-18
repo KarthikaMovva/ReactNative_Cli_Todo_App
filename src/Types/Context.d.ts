@@ -1,11 +1,13 @@
+import { AppColorsType } from '../Utilities/Colors';
+
 export interface ModalContextType {
-  warningMessage: string;
-  setwarningMessage: React.Dispatch<React.SetStateAction<string>>;
-  showWarning: boolean;
-  setshowWarning: React.Dispatch<React.SetStateAction<boolean>>;
-  onConfirm?: () => void;
+  WarningMessage: string;
+  setWarningMessage: React.Dispatch<React.SetStateAction<string>>;
+  ShowWarning: boolean;
+  setShowWarning: React.Dispatch<React.SetStateAction<boolean>>;
+  OnConfirm?: () => void;
   setOnConfirm: React.Dispatch<React.SetStateAction<(() => void) | undefined>>;
-  isConfirm: boolean;
+  IsConfirm: boolean;
   setIsConfirm: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -15,7 +17,8 @@ export interface ProviderProps {
 
 export interface ThemeContextType {
     isDarkTheme: boolean;
-    setisDarkTheme: React.Dispatch<React.SetStateAction<boolean>>;
+    setDarkTheme: React.Dispatch<React.SetStateAction<boolean>>;
+    requiredColors : AppColorsType
 }
 
 export interface ThemeProviderProps {

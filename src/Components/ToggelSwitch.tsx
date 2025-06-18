@@ -28,7 +28,7 @@ const styles = (isDarkTheme: boolean) => StyleSheet.create({
   label: {
     marginHorizontal: 10,
     fontSize: 16,
-    color: isDarkTheme ? "white" : "black"
+    color: isDarkTheme ? 'white' : 'black',
   },
 });
 

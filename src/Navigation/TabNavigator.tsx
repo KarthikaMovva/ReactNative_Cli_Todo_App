@@ -1,22 +1,22 @@
-import React from "react";
+import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { StatusBar, StyleSheet } from "react-native";
-import HomeScreen from "../Screens/HomeScreen";
-import AddTaskScreen from "../Screens/AddTaskScreen";
-import SettingsScreen from "../Screens/SettingsScreen";
-import { TabParamList } from "../Types/Navigation";
-import getTabBarIcon from "../Utilities/GetTabBarIcon";
-import MenuButton from "../Components/MenuButton";
-import TopTabNavigator from "./TopTabBar";
-import Colors from "../Utilities/Colors";
-import { ThemeContext } from "../Auth/ThemeContext";
+import { StatusBar, StyleSheet } from 'react-native';
+import HomeScreen from '../Screens/HomeScreen';
+import AddTaskScreen from '../Screens/AddTaskScreen';
+import SettingsScreen from '../Screens/SettingsScreen';
+import { TabParamList } from '../Types/Navigation';
+import { getTabBarIcon } from '../Utilities/Utilities';
+import MenuButton from '../Components/MenuButton';
+import TopTabNavigator from './TopTabBar';
+import { AppColorsType } from '../Utilities/Colors';
+import { ThemeContext } from '../Auth/ThemeContext';
 
 const Tab = createBottomTabNavigator<TabParamList>();
 
 const TabNavigator = () => {
-  const { isDarkTheme } = ThemeContext();
-  const statusBarBarStyle = isDarkTheme ? 'light-content' : 'dark-content';
-  const statusBarBackgroundColor = isDarkTheme ? Colors.darkTheme.tabsColor : Colors.background;
+  const { requiredColors } = ThemeContext();
+  const statusBarBarStyle = requiredColors ? 'light-content' : 'dark-content';
+  const statusBarBackgroundColor = requiredColors.MovieCardBackground;
 
   return (
     <>
@@ -30,10 +30,10 @@ const TabNavigator = () => {
           tabBarIcon: getTabBarIcon(route.name),
           tabBarActiveTintColor: 'tomato',
           tabBarInactiveTintColor: 'gray',
-          tabBarStyle: styles(isDarkTheme).background,
+          tabBarStyle: styles(requiredColors).background,
           headerShown: true,
-          headerStyle: styles(isDarkTheme).background,
-          headerTitleStyle: styles(isDarkTheme).title
+          headerStyle: styles(requiredColors).background,
+          headerTitleStyle: styles(requiredColors).title,
         })}
       >
         <Tab.Screen name="Home" component={HomeScreen} />
@@ -45,13 +45,13 @@ const TabNavigator = () => {
   );
 };
 
-const styles = (isDarkTheme:boolean) => StyleSheet.create({
-  background:{ 
-    backgroundColor: isDarkTheme ? Colors.darkTheme.tabsColor : Colors.background, 
+const styles = (requiredColors:AppColorsType) => StyleSheet.create({
+  background:{
+    backgroundColor: requiredColors.MovieCardBackground,
   },
   title:{
-    color: isDarkTheme ? "white" : "black"
-  }
-})
+    color: requiredColors.darkText,
+  },
+});
 
 export default TabNavigator;

@@ -1,18 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { ImageSourcePropType } from 'react-native';
-import Profile from '../Assets/Profile.png'; 
-
-interface ProfileState {
-  profileImage: ImageSourcePropType;
-}
+import Profile from '../Assets/Profile.png';
+import { ProfileState } from '../Types/Redux';
 
 const initialState: ProfileState = {
-  profileImage: Profile, 
+  profileImage: Profile,
 };
 
 const ProfileSlice = createSlice({
-  name: 'profile', 
-  initialState,   
+  name: 'profile',
+  initialState,
   reducers: {
     setProfileImage: (state, action: PayloadAction<ImageSourcePropType>) => {
       state.profileImage = action.payload;

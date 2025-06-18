@@ -8,13 +8,13 @@ const TopTab = createMaterialTopTabNavigator();
 
 const TopTabNavigator = () => {
 
-const { isDarkTheme } =ThemeContext();
+const { requiredColors } = ThemeContext();
   return (
     <TopTab.Navigator
       screenOptions={{
-        tabBarLabelStyle: { fontSize: 14, color: isDarkTheme? "white": "black" },
+        tabBarLabelStyle: { fontSize: 14, color: requiredColors.darkText },
         tabBarIndicatorStyle: { backgroundColor: 'tomato' },
-        tabBarStyle: { backgroundColor: isDarkTheme? "black": 'white' },
+        tabBarStyle: { backgroundColor: requiredColors.background },
       }}
     >
       <TopTab.Screen name="MoviesList" component={MovieScreen} />

@@ -5,8 +5,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../Redux/Store';
 import { updateTask, deleteTask } from '../Redux/TaskSlice';
 import { Task } from '../Types/Redux';
-import Colors from '../Utilities/Colors';
-import { useContextvalues } from '../Auth/ModalContext';
+import { AppColorsType } from '../Utilities/Colors';
+import { useContextValues } from '../Auth/ModalContext';
 import { ThemeContext } from '../Auth/ThemeContext';
 
 import SearchBar from '../Components/SearchBar';
@@ -17,12 +17,12 @@ const HomeScreen: React.FC = () => {
   const allTasks = useSelector((state: RootState) => state.tasks.value);
   const dispatch = useDispatch();
   const {
-    setshowWarning,
-    setwarningMessage,
+    setShowWarning,
+    setWarningMessage,
     setIsConfirm,
     setOnConfirm,
-  } = useContextvalues();
-  const { isDarkTheme } = ThemeContext();
+  } = useContextValues();
+  const { requiredColors } = ThemeContext();
 
   const [search, setSearch] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
@@ -47,7 +47,7 @@ useEffect(() => {
   };
 
   const handleUpdate = () => {
-    if (!selectedTask || !originalTask) return;
+    if (!selectedTask || !originalTask) { return; }
 
     const isUnchanged =
       selectedTask.title === originalTask.title &&
@@ -59,20 +59,20 @@ useEffect(() => {
     );
 
     if (!taskExists) {
-      setwarningMessage('Task not found or you do not have permission to update it.');
-      setshowWarning(true);
+      setWarningMessage('Task not found or you do not have permission to update it.');
+      setShowWarning(true);
       return;
     }
 
     if (isUnchanged) {
-      setwarningMessage("No values were changed. Do you still want to save?");
+      setWarningMessage('No values were changed. Do you still want to save?');
       setIsConfirm(true);
-      setshowWarning(true);
+      setShowWarning(true);
 
       setOnConfirm(() => () => {
         dispatch(updateTask(selectedTask));
         setModalVisible(false);
-        setshowWarning(false);
+        setShowWarning(false);
       });
 
       return;
@@ -83,13 +83,13 @@ useEffect(() => {
 
 
   const handleDeletePress = (task: Task) => {
-    setwarningMessage(`Are you sure you want to delete "${task.title}"?`);
+    setWarningMessage(`Are you sure you want to delete "${task.title}"?`);
     setIsConfirm(true);
-    setshowWarning(true);
+    setShowWarning(true);
 
     setOnConfirm(() => () => {
       dispatch(deleteTask(task.id));
-      setshowWarning(false);
+      setShowWarning(false);
     });
   };
 
@@ -100,8 +100,8 @@ useEffect(() => {
   };
 
   return (
-    <View style={styles(isDarkTheme).container}>
-      <View style={styles(isDarkTheme).contentContainer}>
+    <View style={styles(requiredColors).container}>
+      <View style={styles(requiredColors).contentContainer}>
         <SearchBar value={search} onChangeText={setSearch} placeholder="Search tasks..." />
         <TaskList
           tasks={visibleTasks}
@@ -121,15 +121,15 @@ useEffect(() => {
   );
 };
 
-const styles = (isDarkTheme:boolean) => StyleSheet.create({
+const styles = (requiredColors:AppColorsType) => StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: isDarkTheme? Colors.darkTheme.darkBackground:Colors.background,
+    backgroundColor: requiredColors.background,
   },
   contentContainer: {
-    flex: 1
-  }
+    flex: 1,
+  },
 });
 
 export default HomeScreen;

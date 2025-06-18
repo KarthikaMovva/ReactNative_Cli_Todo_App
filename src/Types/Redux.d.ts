@@ -1,4 +1,4 @@
-import { ImageSourcePropType } from "react-native";
+import { ImageSourcePropType } from 'react-native';
 
 export interface Task {
   id: string;
@@ -22,4 +22,8 @@ export interface UserState {
   users: RegisteredUser[];
   currentUser: RegisteredUser | null;
   error: string | null;
+}
+
+export interface ProfileState {
+  profileImage: ImageSourcePropType;
 }

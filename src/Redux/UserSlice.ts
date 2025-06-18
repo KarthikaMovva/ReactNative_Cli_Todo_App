@@ -4,7 +4,7 @@ import { UserState, RegisteredUser } from '../Types/Redux';
 const initialState: UserState = {
   users: [],
   currentUser: null,
-  error : null
+  error : null,
 };
 
 const userSlice = createSlice({
@@ -22,14 +22,14 @@ const userSlice = createSlice({
       }
     },
     loginUser: (state, action: PayloadAction<{ email: string; password: string }>) => {
-      const user = state.users.find(user => user.email === action.payload.email);
+      const user = state.users.find(users => users.email === action.payload.email);
       if (!user) {
         state.error = 'User not found. Please sign up.';
         state.currentUser = null;
         return;
       }
       if (user.password !== action.payload.password) {
-        state.error = 'Incorrect password.'
+        state.error = 'Incorrect password.';
         state.currentUser = null;
         return;
       }
@@ -37,9 +37,9 @@ const userSlice = createSlice({
       state.error = null;
     },
      logoutUser: (state) => {
-      state.currentUser = null; 
-      state.error = null;       
-    }
+      state.currentUser = null;
+      state.error = null;
+    },
   },
 });
 

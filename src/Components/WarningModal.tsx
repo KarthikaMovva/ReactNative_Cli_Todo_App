@@ -1,59 +1,58 @@
 import React from 'react';
 import { Modal, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { WarningModalProps } from "../Types/Props"
-import Colors from '../Utilities/Colors';
+import { WarningModalProps } from '../Types/Props';
+import { AppColorsType } from '../Utilities/Colors';
 import { ThemeContext } from '../Auth/ThemeContext';
 
 const WarningModal: React.FC<WarningModalProps> = ({ visible, message, onClose, onConfirm }) => {
 
-  const { isDarkTheme } = ThemeContext();
+  const { requiredColors } = ThemeContext();
 
   return (
     <Modal visible={visible} transparent animationType="fade">
-      <View style={styles(isDarkTheme).overlay}> 
-        <View style={styles(isDarkTheme).modalContainer}> 
-          <Text style={styles(isDarkTheme).message}>{message}</Text> 
+      <View style={styles(requiredColors).overlay}>
+        <View style={styles(requiredColors).modalContainer}>
+          <Text style={styles(requiredColors).message}>{message}</Text>
 
           {onConfirm ? (
-            <View style={styles(isDarkTheme).buttonRow}>
-              <TouchableOpacity onPress={onConfirm} style={[styles(isDarkTheme).button, styles(isDarkTheme).confirm]}>
-                <Text style={styles(isDarkTheme).buttonText}>Yes</Text>
+            <View style={styles(requiredColors).buttonRow}>
+              <TouchableOpacity onPress={onConfirm} style={[styles(requiredColors).button, styles(requiredColors).confirm]}>
+                <Text style={styles(requiredColors).buttonText}>Yes</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={onClose} style={[styles(isDarkTheme).button, styles(isDarkTheme).cancel]}>
-                <Text style={styles(isDarkTheme).buttonText}>Cancel</Text>
+              <TouchableOpacity onPress={onClose} style={[styles(requiredColors).button, styles(requiredColors).cancel]}>
+                <Text style={styles(requiredColors).buttonText}>Cancel</Text>
               </TouchableOpacity>
             </View>
           ) : (
-            <TouchableOpacity onPress={onClose} style={[styles(isDarkTheme).button, styles(isDarkTheme).confirm]}>
-              <Text style={styles(isDarkTheme).buttonText}>OK</Text>
+            <TouchableOpacity onPress={onClose} style={[styles(requiredColors).button, styles(requiredColors).confirm]}>
+              <Text style={styles(requiredColors).buttonText}>OK</Text>
             </TouchableOpacity>
           )}
-          
         </View>
       </View>
     </Modal>
   );
 };
 
-const styles = (isDarkTheme:boolean) => StyleSheet.create({
+const styles = (requiredColors:AppColorsType) => StyleSheet.create({
   overlay: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: Colors.modalOverlay
+    backgroundColor: requiredColors.modalOverlay,
   },
   modalContainer: {
     padding: 20,
     borderRadius: 20,
-    backgroundColor : isDarkTheme? Colors.darkTheme.cardsBackground: Colors.background,
+    backgroundColor : requiredColors.background,
     width: '80%',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   message: {
     fontSize: 16,
     marginVertical: 20,
     textAlign: 'center',
-    color : isDarkTheme? Colors.background: Colors.darkText
+    color : requiredColors.darkText,
   },
   buttonRow: {
     flexDirection: 'row',
@@ -69,13 +68,13 @@ const styles = (isDarkTheme:boolean) => StyleSheet.create({
     marginHorizontal: 5,
   },
   confirm: {
-    backgroundColor: Colors.primaryButton,
+    backgroundColor: requiredColors.brightBlue,
   },
   cancel: {
-    backgroundColor: isDarkTheme? "red": Colors.cancelButton,
+    backgroundColor: requiredColors.deleteIconColor,
   },
   buttonText: {
-    color: Colors.background, 
+    color: requiredColors.background,
     fontWeight: 'bold',
   },
 });

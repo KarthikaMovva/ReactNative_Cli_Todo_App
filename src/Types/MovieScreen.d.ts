@@ -1,4 +1,4 @@
-import { Movie } from "./MovieList";
+import { Movie } from './MovieList';
 
 export interface MovieApiResponse {
     results: Movie[];

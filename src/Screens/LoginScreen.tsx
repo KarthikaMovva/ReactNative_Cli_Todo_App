@@ -7,42 +7,43 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../Redux/store';
 import { loginUser } from '../Redux/UserSlice';
 
-import { isValidEmail } from '../Utilities/IdAndMails';
-import Colors from '../Utilities/Colors';
+import { isValidEmail } from '../Utilities/Utilities';
+import { AppColorsType } from '../Utilities/Colors';
 import CustomInput from '../Components/CustomInput';
 import Title from '../Components/Title';
 import CustomButton from '../Components/CustomButton';
 import axiosInstance from '../Network/AxiosInstance';
 import { Endpoints } from '../Network/Endpoints';
-import { useContextvalues } from '../Auth/ModalContext';
+import { useContextValues } from '../Auth/ModalContext';
+import { ThemeContext } from '../Auth/ThemeContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
 const LoginScreen: React.FC<Props> = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
+  const { requiredColors } = ThemeContext();
   const dispatch = useDispatch();
   const users = useSelector((state: RootState) => state.users.users);
 
   const {
-    setshowWarning,
-    setwarningMessage,
-    setIsConfirm
-  } = useContextvalues();
+    setShowWarning,
+    setWarningMessage,
+    setIsConfirm,
+  } = useContextValues();
 
   const handleLogin = async () => {
-    setIsConfirm(false); 
+    setIsConfirm(false);
 
     if (!email.trim() || !password.trim()) {
-      setwarningMessage('Please enter both email and password.');
-      setshowWarning(true);
+      setWarningMessage('Please enter both email and password.');
+      setShowWarning(true);
       return;
     }
 
     if (!isValidEmail(email)) {
-      setwarningMessage('Please enter a valid email address.');
-      setshowWarning(true);
+      setWarningMessage('Please enter a valid email address.');
+      setShowWarning(true);
       return;
     }
 
@@ -55,23 +56,23 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
       );
 
       if (!user) {
-        setwarningMessage('Invalid credentials or token mismatch.');
-        setshowWarning(true);
+        setWarningMessage('Invalid credentials or token mismatch.');
+        setShowWarning(true);
         return;
       }
 
       dispatch(loginUser({ email, password }));
     } catch (error: any) {
       console.error('API Error:', error);
-      setwarningMessage('Failed to authenticate. Please try again.');
-      setshowWarning(true);
+      setWarningMessage('Failed to authenticate. Please try again.');
+      setShowWarning(true);
     }
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles(requiredColors).container}>
 
-      <Title heading='Login' />
+      <Title heading="Login" />
 
       <CustomInput
         placeholder="Enter Email"
@@ -86,9 +87,9 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
       />
 
       <Title
-        heading='Do not have an account? Signup'
+        heading="Do not have an account? Signup"
         onPress={() => navigation.navigate('Signup')}
-        style={styles.switchText}
+        style={styles(requiredColors).switchText}
       />
 
       <CustomButton onPress={handleLogin} text="Login" />
@@ -96,17 +97,17 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const styles = (requiredColors:AppColorsType)=>StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     paddingHorizontal: 25,
     paddingVertical: 40,
-    backgroundColor: Colors.loginBackground,
+    backgroundColor: requiredColors.background,
   },
    switchText: {
     fontSize: 14,
-    color: Colors.signupSwitchText,
+    color: requiredColors.brightBlue,
     textDecorationLine: 'underline',
     marginVertical: 20,
   },

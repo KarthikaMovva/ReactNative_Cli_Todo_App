@@ -2,27 +2,27 @@ import React from 'react';
 import { Modal, TextInput, TouchableOpacity, Text, View, StyleSheet } from 'react-native';
 import { EditModalProps } from '../Types/Props';
 import StatusPicker from './StatusPicker';
-import Colors from '../Utilities/Colors';
 import { ThemeContext } from '../Auth/ThemeContext';
+import { AppColorsType } from '../Utilities/Colors';
 
 const EditTaskModal: React.FC<EditModalProps> = ({ visible, task, onClose, onChange, onSave }) => {
-  const { isDarkTheme } = ThemeContext();
-  if (!task) return null;
+  const { requiredColors } = ThemeContext();
+  if (!task) { return null; }
 
   return (
     <Modal visible={visible} animationType="slide">
-      <View style={styles(isDarkTheme).container}>
+      <View style={styles(requiredColors).container}>
         <TextInput
-          style={styles(isDarkTheme).input}
+          style={styles(requiredColors).input}
           placeholder="Title"
-          placeholderTextColor={isDarkTheme? Colors.loginBackground: Colors.mediumText}
+          placeholderTextColor={requiredColors.mediumText}
           value={task.title}
           onChangeText={text => onChange({ ...task, title: text })}
         />
         <TextInput
-          style={styles(isDarkTheme).input}
+          style={styles(requiredColors).input}
           placeholder="Description"
-          placeholderTextColor={isDarkTheme? Colors.loginBackground: Colors.mediumText}
+          placeholderTextColor={requiredColors.mediumText}
           value={task.description}
           onChangeText={text => onChange({ ...task, description: text })}
         />
@@ -31,12 +31,12 @@ const EditTaskModal: React.FC<EditModalProps> = ({ visible, task, onClose, onCha
           onValueChange={status => onChange({ ...task, status })}
         />
 
-        <View style={styles(isDarkTheme).buttonRow}>
-          <TouchableOpacity style={styles(isDarkTheme).closeButton} onPress={onClose}>
-            <Text style={styles(isDarkTheme).buttonText}>Cancel</Text>
+        <View style={styles(requiredColors).buttonRow}>
+          <TouchableOpacity style={styles(requiredColors).closeButton} onPress={onClose}>
+            <Text style={styles(requiredColors).buttonText}>Cancel</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles(isDarkTheme).saveButton} onPress={onSave}>
-            <Text style={styles(isDarkTheme).buttonText}>Save</Text>
+          <TouchableOpacity style={styles(requiredColors).saveButton} onPress={onSave}>
+            <Text style={styles(requiredColors).buttonText}>Save</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -44,20 +44,22 @@ const EditTaskModal: React.FC<EditModalProps> = ({ visible, task, onClose, onCha
   );
 };
 
-const styles = (isDarkTheme:boolean)=>StyleSheet.create({
+const styles = (requiredColors:AppColorsType)=>StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     padding: 20,
-    backgroundColor: isDarkTheme? Colors.darkTheme.darkBackground: Colors.background,
+    backgroundColor: requiredColors.background,
   },
   input: {
-    backgroundColor: isDarkTheme? Colors.darkTheme.cardsBackground: Colors.lightGray,
+    backgroundColor: requiredColors.MovieCardBackground,
     padding: 12,
     borderRadius: 8,
     marginVertical: 10,
+    borderWidth: 1,
+    borderColor: requiredColors.lightGray,
     fontSize: 16,
-    color: isDarkTheme? Colors.loginBackground: Colors.darkText,
+    color: requiredColors.darkText,
   },
   buttonRow: {
     flexDirection: 'row',
@@ -65,7 +67,7 @@ const styles = (isDarkTheme:boolean)=>StyleSheet.create({
     marginVertical: 10,
   },
   saveButton: {
-    backgroundColor: Colors.saveButton,
+    backgroundColor: requiredColors.saveButton,
     padding: 15,
     borderRadius: 10,
     flex: 1,
@@ -73,7 +75,7 @@ const styles = (isDarkTheme:boolean)=>StyleSheet.create({
     alignItems: 'center',
   },
   closeButton: {
-    backgroundColor: Colors.dangerButton,
+    backgroundColor: requiredColors.dangerButton,
     padding: 15,
     borderRadius: 10,
     flex: 1,
@@ -81,7 +83,7 @@ const styles = (isDarkTheme:boolean)=>StyleSheet.create({
     alignItems: 'center',
   },
   buttonText: {
-    color: Colors.background,
+    color: requiredColors.darkText,
     fontWeight: 'bold',
     fontSize: 16,
   },

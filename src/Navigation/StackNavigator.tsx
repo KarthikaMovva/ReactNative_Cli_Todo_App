@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from '../Screens/LoginScreen';
 import SignupScreen from '../Screens/SignupScreen';
-import DrawerNavigator from './DrawerNavigator'; 
+import DrawerNavigator from './DrawerNavigator';
 import { useSelector } from 'react-redux';
 import { RootStackParamList } from '../Types/Navigation';
 import { RootState } from '../Redux/Store';
