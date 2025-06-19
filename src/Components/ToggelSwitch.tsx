@@ -1,14 +1,15 @@
 import React from 'react';
 import { View, Text, Switch, StyleSheet } from 'react-native';
 import { ToggleSwitchProps } from '../Types/Props';
-import { ThemeContext } from '../Auth/ThemeContext';
+import { useSelector } from 'react-redux';
+import { RootState } from '../Redux/Store';
 
 
 const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ label, value, onValueChange }) => {
-  const { isDarkTheme } = ThemeContext();
+  const isDarkTheme = useSelector((state: RootState) => state.users.currentUser?.theme);
   return (
-    <View style={styles(isDarkTheme).container}>
-      <Text style={styles(isDarkTheme).label}>{label}</Text>
+    <View style={styles(isDarkTheme || false ).container}>
+      <Text style={styles(isDarkTheme || false).label}>{label}</Text>
       <Switch
         value={value}
         onValueChange={onValueChange}

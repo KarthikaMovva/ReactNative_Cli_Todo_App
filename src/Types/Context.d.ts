@@ -16,9 +16,7 @@ export interface ProviderProps {
 }
 
 export interface ThemeContextType {
-    isDarkTheme: boolean;
-    setDarkTheme: React.Dispatch<React.SetStateAction<boolean>>;
-    requiredColors : AppColorsType
+    requiredColors : AppColorsType;
 }
 
 export interface ThemeProviderProps {

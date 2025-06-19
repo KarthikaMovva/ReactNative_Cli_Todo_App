@@ -1,10 +1,11 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { UserState, RegisteredUser } from '../Types/Redux';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {ImageSourcePropType} from 'react-native';
+import {UserState, RegisteredUser} from '../Types/Redux';
 
 const initialState: UserState = {
   users: [],
   currentUser: null,
-  error : null,
+  error: null,
 };
 
 const userSlice = createSlice({
@@ -12,7 +13,9 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     signupUser: (state, action: PayloadAction<RegisteredUser>) => {
-      const existingUser = state.users.find(user => user.email === action.payload.email);
+      const existingUser = state.users.find(
+        user => user.email === action.payload.email,
+      );
       if (!existingUser) {
         state.users.push(action.payload);
         state.currentUser = action.payload;
@@ -21,8 +24,13 @@ const userSlice = createSlice({
         state.error = 'User already exists. Please login instead.';
       }
     },
-    loginUser: (state, action: PayloadAction<{ email: string; password: string }>) => {
-      const user = state.users.find(users => users.email === action.payload.email);
+    loginUser: (
+      state,
+      action: PayloadAction<{email: string; password: string}>,
+    ) => {
+      const user = state.users.find(
+        users => users.email === action.payload.email,
+      );
       if (!user) {
         state.error = 'User not found. Please sign up.';
         state.currentUser = null;
@@ -36,12 +44,35 @@ const userSlice = createSlice({
       state.currentUser = user;
       state.error = null;
     },
-     logoutUser: (state) => {
+    logoutUser: state => {
       state.currentUser = null;
       state.error = null;
+    },
+    setProfileImage: (state, action: PayloadAction<ImageSourcePropType>) => {
+      if (state.currentUser !== null) {
+        state.currentUser.profileImage = action.payload;
+        const userIndex = state.users.findIndex(
+          user => user.email === state.currentUser!.email,
+        );
+        if (userIndex !== -1) {
+          state.users[userIndex].profileImage = action.payload;
+        }
+      }
+    },
+    setTheme: (state, action: PayloadAction<boolean>) => {
+      if (state.currentUser !== null) {
+        state.currentUser.theme = action.payload;
+        const userIndex = state.users.findIndex(
+          user => user.email === state.currentUser!.email,
+        );
+        if (userIndex !== -1) {
+          state.users[userIndex].theme = action.payload;
+        }
+      }
     },
   },
 });
 
-export const { signupUser, loginUser, logoutUser } = userSlice.actions;
+export const {signupUser, loginUser, logoutUser, setProfileImage, setTheme} =
+  userSlice.actions;
 export default userSlice.reducer;

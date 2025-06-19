@@ -44,7 +44,7 @@ const styles = (requiredColors:AppColorsType) => StyleSheet.create({
   modalContainer: {
     padding: 20,
     borderRadius: 20,
-    backgroundColor : requiredColors.background,
+    backgroundColor : requiredColors.MovieCardBackground,
     width: '80%',
     alignItems: 'center',
   },

@@ -27,6 +27,8 @@ const SignupScreen: React.FC<Props> = ({ navigation }) => {
   const { requiredColors } = ThemeContext();
   const dispatch = useDispatch();
   const users = useSelector((state: RootState) => state.users.users);
+  const theme = useSelector((state: RootState) => state.users.currentUser?.theme);
+  const profileUploaded = useSelector((state: RootState) => state.users.currentUser?.profileImage);
 
   const {
     setShowWarning,
@@ -65,7 +67,7 @@ const SignupScreen: React.FC<Props> = ({ navigation }) => {
     try {
       const response = await axiosInstance.get(Endpoints.signup);
       const token = response.data.request_token;
-      dispatch(signupUser({ email, password, token, profileImage: Profile }));
+      dispatch(signupUser({ email, password, token, profileImage: profileUploaded || Profile, theme : theme || false }));
     } catch (error: any) {
       console.error('API Error:', error);
       setWarningMessage(

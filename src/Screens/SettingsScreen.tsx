@@ -5,14 +5,15 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../Redux/Store';
 import { AppColorsType } from '../Utilities/Colors';
 import ImageUploadModal from '../Components/ImageUploadModal';
-import { setProfileImage } from '../Redux/ProfileSlice';
+import { setProfileImage, setTheme } from '../Redux/UserSlice';
 import ImagePicker from 'react-native-image-crop-picker';
 import { ThemeContext } from '../Auth/ThemeContext';
 
 const SettingsScreen = () => {
-  const { isDarkTheme, setDarkTheme, requiredColors } = ThemeContext();
+  const { requiredColors } = ThemeContext();
   const dispatch = useDispatch();
-  const image = useSelector((state: RootState) => state.profile.profileImage);
+  const image = useSelector((state: RootState) => state.users.currentUser?.profileImage);
+  const isDarkTheme = useSelector((state: RootState) => state.users.currentUser?.theme);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
 
   const profileUpload = () => {
@@ -68,8 +69,8 @@ const SettingsScreen = () => {
       </TouchableOpacity>
       <ToggleSwitch
         label="Turn on dark theme"
-        value={isDarkTheme}
-        onValueChange={(val) => setDarkTheme(val)}
+        value={isDarkTheme || false}
+        onValueChange={(val) => dispatch(setTheme(val))}
       />
     </View>
   );

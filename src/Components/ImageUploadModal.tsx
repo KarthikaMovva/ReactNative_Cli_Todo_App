@@ -51,7 +51,7 @@ cancel:{
     fontSize: 16,
 },
 fontColor:{
-    color : requiredColors.mediumText,
+    color : requiredColors.darkText,
     fontWeight : 'bold',
     fontSize : 15,
 },

@@ -16,6 +16,7 @@ export interface RegisteredUser {
   password: string;
   token: string;
   profileImage : ImageSourcePropType;
+  theme : boolean;
 }
 
 export interface UserState {
@@ -24,6 +25,3 @@ export interface UserState {
   error: string | null;
 }
 
-export interface ProfileState {
-  profileImage: ImageSourcePropType;
-}

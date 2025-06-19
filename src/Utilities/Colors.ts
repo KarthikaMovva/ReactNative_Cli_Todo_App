@@ -29,7 +29,7 @@ const Colors = {
     lightText: '#ffffff',
     brightBlue: '#007bff',
     saveButton: '#28a745',
-    dangerButton: '#ffffff',
+    dangerButton: '#dc3545',
     logoutBackground: '#900',
     deleteIconColor: '#900',
     statusPending: '#9e0826',

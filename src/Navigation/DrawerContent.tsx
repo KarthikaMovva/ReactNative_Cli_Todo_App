@@ -13,11 +13,10 @@ import { StyleSheet } from 'react-native';
 
 const DrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
   const dispatch = useDispatch();
-  const { requiredColors, setDarkTheme } = ThemeContext();
+  const { requiredColors } = ThemeContext();
 
   const handleLogout = () => {
     dispatch(logoutUser());
-    setDarkTheme(false);
     console.log('logout clicked');
   };
 
