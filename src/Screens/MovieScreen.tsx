@@ -5,23 +5,41 @@ import {
   Text,
   StyleSheet,
   ActivityIndicator,
-  Image
+  Image,
 } from 'react-native';
 import axiosInstance from '../Network/AxiosInstance';
 import { Movie } from '../Types/MovieList';
 import SearchBar from '../Components/SearchBar';
-import Colors from '../Utilities/Colors';
+import { AppColorsType } from '../Utilities/Colors';
 import { useDebounce } from '../CustomHook/useDebounce';
 import { ThemeContext } from '../Auth/ThemeContext';
 import { Endpoints } from '../Network/Endpoints';
 
 const MoviesScreen: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [search, setsearch] = useState<string>('');
-  const debouncedSearch = useDebounce(search, 300);
-  const { isDarkTheme } = ThemeContext();
+  const [search, setSearch] = useState<string>('');
+  const [length, setLength] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
+  const debouncedSearch = useDebounce<string>(search, 300);
+  const { requiredColors } = ThemeContext();
+
+const onRefresh = useCallback(() => {
+  if (debouncedSearch.trim() === '') {
+    setRefreshing(true);
+    setMovies([]);
+    fetchTopRatedMovies(1);
+  }
+},[fetchTopRatedMovies]);
+
+useEffect(()=>{
+  if(debouncedSearch.trim()){
+    fetchSearchedMovies(debouncedSearch);
+  }
+},[debouncedSearch])
 
    const fetchTopRatedMovies = useCallback(
     async (pageNum: number) => {
@@ -38,9 +56,12 @@ const MoviesScreen: React.FC = () => {
         return combined.sort((a, b) => b.vote_average - a.vote_average);
       });
         setHasMore(pageNum < totalPages);
-        console.log(hasMore,"hasmore inside function")
+        console.log(hasMore,'hasMore inside function');
       } catch (error) {
         console.error('Error fetching movies:', error);
+      }finally{
+        setLoading(false);
+        setRefreshing(false);
       }
     },[hasMore]);
 
@@ -54,24 +75,14 @@ const MoviesScreen: React.FC = () => {
       const results: Movie[] = response.data.results;
       const sortedResults = results.sort((a, b) => b.vote_average - a.vote_average);
       setMovies(sortedResults);
-      setHasMore(false); 
+      setHasMore(false);
+      setLength(movies.length);
     } catch (error) {
       console.error('Error searching movies:', error);
     }
   },
   []
 );
-
-
-useEffect(() => {
-  if (debouncedSearch.trim() === '') {
-    setMovies([]);
-    setPage(1);
-    fetchTopRatedMovies(1);
-  } else {
-    fetchSearchedMovies(debouncedSearch);
-  }
-}, [debouncedSearch, fetchTopRatedMovies, fetchSearchedMovies]);
 
 const handleEndReached = useCallback(() => {
   if (hasMore && debouncedSearch.trim() === '') {
@@ -84,24 +95,24 @@ const handleEndReached = useCallback(() => {
 }, [hasMore, debouncedSearch, fetchTopRatedMovies]);
 
 const handleChange = (text: string) => {
-  setsearch(text);
+  setSearch(text);
 };
 
   const renderItem = ({ item }: { item: Movie }) => (
-    <View style={styles(isDarkTheme).card}>
+    <View style={styles(requiredColors).card}>
       <Image
         source={{
           uri: item.poster_path
             ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
-            : `https://placehold.co/500x750/cccccc/333333?text=No+Image`,
+            : 'https://placehold.co/500x750/cccccc/333333?text=No+Image',
         }}
-        style={styles(isDarkTheme).poster}
+        style={styles(requiredColors).poster}
       />
-      <View style={styles(isDarkTheme).details}>
-        <Text style={styles(isDarkTheme).title}>{item.title}</Text>
-        <Text style={styles(isDarkTheme).rating}>Rating: {item.vote_average.toFixed(1)} / 10</Text>
-        <Text style={styles(isDarkTheme).release}>Release: {item.release_date}</Text>
-        <Text style={styles(isDarkTheme).overview} numberOfLines={3}>
+      <View style={styles(requiredColors).details}>
+        <Text style={styles(requiredColors).title}>{item.title}</Text>
+        <Text style={styles(requiredColors).rating}>Rating: {item.vote_average.toFixed(1)} / 10</Text>
+        <Text style={styles(requiredColors).release}>Release: {item.release_date}</Text>
+        <Text style={styles(requiredColors).overview} numberOfLines={3}>
           {item.overview || 'No overview available.'}
         </Text>
       </View>
@@ -109,41 +120,46 @@ const handleChange = (text: string) => {
   );
 
   const renderFooter = () => (
-    movies.length > 0 ? (
-      <View style={styles(isDarkTheme).footer}>
+    loading || movies.length < length ? (
+      <View style={styles(requiredColors).footer}>
         <ActivityIndicator size="large" color="#007bff" />
-        <Text style={styles(isDarkTheme).footerText}>Loading more movies...</Text>
+        <Text style={styles(requiredColors).footerText}>Loading more movies...</Text>
       </View>
     ) : null
   );
 
-  const renderEmptyComponent = () => (
-    <View style={styles(isDarkTheme).footer}>
-      <Text style={styles(isDarkTheme).footerText}>No movies found</Text>
+  const renderEmptyComponent = () => {
+    return(
+    <View style={styles(requiredColors).footer}>
+      <Text style={styles(requiredColors).footerText}>No movies found</Text>
     </View>
-  );
+    );
+  };
 
   return (
-    <View style={styles(isDarkTheme).container}>
+    <View style={styles(requiredColors).container}>
       <SearchBar value={search} onChangeText={handleChange} placeholder="Search movies..." />
       <FlatList
         data={movies}
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={styles(isDarkTheme).content}
+        contentContainerStyle={styles(requiredColors).content}
         onEndReached={handleEndReached}
         onEndReachedThreshold={0.4}
         ListFooterComponent={renderFooter}
         ListEmptyComponent={renderEmptyComponent}
+        refreshing={refreshing}
+        onRefresh={onRefresh}
       />
     </View>
   );
 };
 
-const styles = (isDarkTheme:boolean) => StyleSheet.create({
+const styles = (requiredColors:AppColorsType) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: isDarkTheme? Colors.darkTheme.darkBackground : Colors.background,
+    backgroundColor: requiredColors.background,
+    padding : 10,
   },
   content: {
     padding: 10,
@@ -151,7 +167,9 @@ const styles = (isDarkTheme:boolean) => StyleSheet.create({
   },
   card: {
     flexDirection: 'row',
-    backgroundColor: isDarkTheme? Colors.darkTheme.cardsBackground : Colors.MovieCardBackgroundcolor,
+    backgroundColor: requiredColors.MovieCardBackground,
+    borderWidth:1,
+    borderColor : requiredColors.lightGray,
     borderRadius: 12,
     marginVertical: 8,
     padding: 15,
@@ -168,19 +186,19 @@ const styles = (isDarkTheme:boolean) => StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: isDarkTheme? Colors.loginBackground: Colors.MovieTitle,
+    color: requiredColors.MovieTitle,
   },
   rating: {
-    color: isDarkTheme? Colors.loginBackground: Colors.MovieRating,
+    color: requiredColors.MovieOverview,
     marginVertical: 2,
   },
   release: {
-    color: isDarkTheme? Colors.loginBackground: Colors.MovieRelease,
+    color: requiredColors.MovieRelease,
     marginBottom: 5,
   },
   overview: {
     fontSize: 13,
-    color: isDarkTheme? Colors.loginBackground: Colors.MovieOverview,
+    color: requiredColors.MovieOverview,
   },
   footer: {
     paddingVertical: 20,
@@ -188,7 +206,7 @@ const styles = (isDarkTheme:boolean) => StyleSheet.create({
   },
   footerText: {
     marginTop: 10,
-    color: isDarkTheme? Colors.loginBackground: Colors.MovieFooter,
+    color: requiredColors.MovieOverview,
   },
 });
 

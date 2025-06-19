@@ -8,15 +8,15 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
 } from 'react-native';
-import Colors from '../Utilities/Colors';
+import { AppColorsType } from '../Utilities/Colors';
 import { StatusPickerProps } from '../Types/Props';
-import { TaskStatus } from '../Utilities/StatusAndColors';
-import Ionicons from 'react-native-vector-icons/Ionicons'; 
+import { TaskStatus } from '../Utilities/Utilities';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { ThemeContext } from '../Auth/ThemeContext';
 
 const StatusPicker: React.FC<StatusPickerProps> = ({ selectedValue, onValueChange }) => {
   const [modalVisible, setModalVisible] = useState(false);
-  const { isDarkTheme } = ThemeContext();
+  const { requiredColors } = ThemeContext();
 
   const handleSelect = (value: string) => {
     onValueChange(value);
@@ -26,10 +26,10 @@ const StatusPicker: React.FC<StatusPickerProps> = ({ selectedValue, onValueChang
   return (
     <View>
       <TouchableOpacity
-        style={styles(isDarkTheme).pickerButton}
+        style={styles(requiredColors).pickerButton}
         onPress={() => setModalVisible(true)}
       >
-        <Text style={styles(isDarkTheme).pickerButtonText}>
+        <Text style={styles(requiredColors).pickerButtonText}>
           {selectedValue || 'Select status'}
         </Text>
       </TouchableOpacity>
@@ -41,15 +41,15 @@ const StatusPicker: React.FC<StatusPickerProps> = ({ selectedValue, onValueChang
         onRequestClose={() => setModalVisible(false)}
       >
         <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
-          <View style={styles(isDarkTheme).modalOverlay}>
+          <View style={styles(requiredColors).modalOverlay}>
             <TouchableWithoutFeedback>
-              <View style={styles(isDarkTheme).modalContent}>
+              <View style={styles(requiredColors).modalContent}>
                 <FlatList
                   data={Object.values(TaskStatus)}
                   keyExtractor={(item) => item}
                   renderItem={({ item }) => (
                     <TouchableOpacity
-                      style={styles(isDarkTheme).option}
+                      style={styles(requiredColors).option}
                       onPress={() => handleSelect(item)}
                     >
                       <Ionicons
@@ -59,10 +59,10 @@ const StatusPicker: React.FC<StatusPickerProps> = ({ selectedValue, onValueChang
                             : 'radio-button-off'
                         }
                         size={20}
-                        color={Colors.primaryButton}
-                        style={styles(isDarkTheme).radioIcon}
+                        color={requiredColors.brightBlue}
+                        style={styles(requiredColors).radioIcon}
                       />
-                      <Text style={styles(isDarkTheme).optionText}>{item}</Text>
+                      <Text style={styles(requiredColors).optionText}>{item}</Text>
                     </TouchableOpacity>
                   )}
                 />
@@ -75,25 +75,27 @@ const StatusPicker: React.FC<StatusPickerProps> = ({ selectedValue, onValueChang
   );
 };
 
-const styles = (isDarkTheme:boolean)=>StyleSheet.create({
+const styles = (requiredColors:AppColorsType)=>StyleSheet.create({
   pickerButton: {
-    backgroundColor: isDarkTheme? Colors.darkTheme.cardsBackground: Colors.lightGray,
+    backgroundColor: requiredColors.MovieCardBackground,
+    borderWidth : 1,
+    borderColor : requiredColors.lightGray,
     padding: 12,
     borderRadius: 8,
     marginVertical: 15,
   },
   pickerButtonText: {
     fontSize: 16,
-    color: isDarkTheme? Colors.loginBackground: Colors.darkText,
+    color: requiredColors.darkText,
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: Colors.modalOverlay,
+    backgroundColor: requiredColors.modalOverlay,
     justifyContent: 'center',
     alignItems: 'center',
   },
   modalContent: {
-    backgroundColor: isDarkTheme? Colors.darkTheme.cardsBackground: Colors.background,
+    backgroundColor: requiredColors.background,
     borderRadius: 10,
     width: '80%',
     paddingVertical: 10,
@@ -102,14 +104,14 @@ const styles = (isDarkTheme:boolean)=>StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 15,
-    paddingHorizontal: 20
+    paddingHorizontal: 20,
   },
   radioIcon: {
     marginHorizontal: 10,
   },
   optionText: {
     fontSize: 16,
-    color: isDarkTheme? Colors.loginBackground: Colors.darkText,
+    color: requiredColors.darkText,
   },
 });
 

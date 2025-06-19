@@ -3,60 +3,61 @@ import { View, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import ToggleSwitch from '../Components/ToggelSwitch';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../Redux/Store';
-import Colors from '../Utilities/Colors';
+import { AppColorsType } from '../Utilities/Colors';
 import ImageUploadModal from '../Components/ImageUploadModal';
-import { setProfileImage } from '../Redux/ProfileSlice';
-import ImagePicker from "react-native-image-crop-picker";
+import { setProfileImage, setTheme } from '../Redux/UserSlice';
+import ImagePicker from 'react-native-image-crop-picker';
 import { ThemeContext } from '../Auth/ThemeContext';
 
 const SettingsScreen = () => {
-  const { isDarkTheme, setisDarkTheme } = ThemeContext();
+  const { requiredColors } = ThemeContext();
   const dispatch = useDispatch();
-  const image = useSelector((state: RootState) => state.profile.profileImage);
-  const [modalVisible, setmodalVisible] = useState<boolean>(false);
+  const image = useSelector((state: RootState) => state.users.currentUser?.profileImage);
+  const isDarkTheme = useSelector((state: RootState) => state.users.currentUser?.theme);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
 
   const profileUpload = () => {
-    setmodalVisible(true);
-  }
+    setModalVisible(true);
+  };
 
   const onClose = () => {
-    setmodalVisible(false);
-  }
+    setModalVisible(false);
+  };
 
   const cameraPhoto = () => {
     ImagePicker.openCamera({
       width: 300,
       height: 400,
       cropping: true,
-    }).then((image) => {
-      console.log(image);
-      dispatch(setProfileImage({uri:image.path}));
-      setmodalVisible(false);
+    }).then((picture) => {
+      console.log(picture);
+      dispatch(setProfileImage({uri:picture.path}));
+      setModalVisible(false);
     })
       .catch(error => {
         console.log('Camera error:', error);
-        setmodalVisible(false);
+        setModalVisible(false);
       });
-  }
+  };
 
   const galleryPhoto = () => {
     ImagePicker.openPicker({
       width: 300,
       height: 400,
       cropping: true,
-    }).then((image) => {
-      console.log(image);
-      dispatch(setProfileImage({ uri:image.path }));
-      setmodalVisible(false);
+    }).then((photo) => {
+      console.log(photo);
+      dispatch(setProfileImage({ uri:photo.path }));
+      setModalVisible(false);
     })
       .catch(error => {
         console.log('Gallery error:', error);
-        setmodalVisible(false);
+        setModalVisible(false);
       });
-  }
+  };
 
   return (
-    <View style={styles(isDarkTheme).screenContainer}>
+    <View style={styles(requiredColors).screenContainer}>
       <ImageUploadModal
         visible={modalVisible}
         onClose={onClose}
@@ -64,23 +65,23 @@ const SettingsScreen = () => {
         openGallery={galleryPhoto}
       />
       <TouchableOpacity onPress={profileUpload}>
-        <Image source={image} style={styles(isDarkTheme).profileImage} />
+        <Image source={image} style={styles(requiredColors).profileImage} />
       </TouchableOpacity>
       <ToggleSwitch
-        label='Turn on dark theme'
-        value={isDarkTheme}
-        onValueChange={(val) => setisDarkTheme(val)}
+        label="Turn on dark theme"
+        value={isDarkTheme || false}
+        onValueChange={(val) => dispatch(setTheme(val))}
       />
     </View>
   );
 };
 
-const styles = (isDarkTheme: boolean) => StyleSheet.create({
+const styles = (requiredColors: AppColorsType) => StyleSheet.create({
   screenContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: isDarkTheme ? Colors.darkTheme.darkBackground : Colors.background
+    backgroundColor: requiredColors.background,
   },
   profileImage: {
     width: 150,
@@ -88,7 +89,7 @@ const styles = (isDarkTheme: boolean) => StyleSheet.create({
     borderRadius: 75,
     marginBottom: 20,
     borderWidth: 2,
-  }
+  },
 });
 
 export default SettingsScreen;

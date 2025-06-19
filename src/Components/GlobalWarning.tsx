@@ -1,21 +1,21 @@
 import React from 'react';
 import WarningModal from './WarningModal';
-import { useContextvalues } from '../Auth/ModalContext';
+import { useContextValues } from '../Auth/ModalContext';
 
 const GlobalWarning: React.FC = () => {
   const {
-    showWarning,
-    setshowWarning,
-    warningMessage,
-    onConfirm,
-    isConfirm
-  } = useContextvalues();
+    ShowWarning,
+    setShowWarning,
+    WarningMessage,
+    OnConfirm,
+    IsConfirm,
+  } = useContextValues();
   return (
     <WarningModal
-      visible={showWarning}
-      message={warningMessage}
-      onClose={() => setshowWarning(false)}
-      onConfirm={isConfirm ? onConfirm : undefined}
+      visible={ShowWarning}
+      message={WarningMessage}
+      onClose={() => setShowWarning(false)}
+      onConfirm={IsConfirm ? OnConfirm : undefined}
     />
   );
 };

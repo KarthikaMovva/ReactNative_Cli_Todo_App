@@ -1,4 +1,4 @@
-import { ImageSourcePropType } from "react-native";
+import { ImageSourcePropType } from 'react-native';
 
 export interface Task {
   id: string;
@@ -16,6 +16,7 @@ export interface RegisteredUser {
   password: string;
   token: string;
   profileImage : ImageSourcePropType;
+  theme : boolean;
 }
 
 export interface UserState {
@@ -23,3 +24,4 @@ export interface UserState {
   currentUser: RegisteredUser | null;
   error: string | null;
 }
+

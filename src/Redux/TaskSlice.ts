@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { generateUniqueId } from '../Utilities/IdAndMails';
+import { generateUniqueId } from '../Utilities/Utilities';
 import { TaskState, Task } from '../Types/Redux';
 
 const initialState: TaskState = {

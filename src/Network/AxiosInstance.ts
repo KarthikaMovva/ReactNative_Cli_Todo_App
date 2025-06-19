@@ -14,22 +14,22 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   config => {
-    console.log(`[Request] ${config.method?.toUpperCase()} ${config.url}`, config, "from interceptors");
+    console.log('[Request]',` ${config.method?.toUpperCase()} ${config.url}`, config, 'from interceptors');
     return config;
   },
   error => {
-    console.error('[Request Error]', error,"from interceptors");
+    console.error('[Request Error]', error,'from interceptors');
     return Promise.reject(error);
   }
 );
 
 axiosInstance.interceptors.response.use(
   response => {
-    console.log(`[Response]`, response,"from interceptors");
+    console.log('[Response]', response,'from interceptors');
     return response;
   },
   error => {
-    console.error('[Response Error]', error?.response || error,"from interceptors");
+    console.error('[Response Error]', error?.response || error,'from interceptors');
     return Promise.reject(error);
   }
 );

@@ -1,14 +1,18 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useContext } from 'react';
 import { ThemeProviderProps, ThemeContextType } from '../Types/Context';
+import { RootState } from '../Redux/Store';
+import { useSelector } from 'react-redux';
+import Colors from '../Utilities/Colors';
 
 const GlobalTheme = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
-    const [isDarkTheme, setisDarkTheme] = useState<boolean>(false);
+
+    const isDarkTheme = useSelector((state: RootState) => state.users.currentUser?.theme);
+    const requiredColors = isDarkTheme ? Colors.darkTheme : Colors.lightTheme;
 
     const ThemeContextValues: ThemeContextType = {
-        isDarkTheme,
-        setisDarkTheme
+        requiredColors,
     };
 
     return (
@@ -22,7 +26,7 @@ export const ThemeContext = (): ThemeContextType => {
     const theme = useContext(GlobalTheme);
 
     if (theme === undefined) {
-        throw new Error("useThemeContext must be used within a ThemeProvider");
+        throw new Error('useThemeContext must be used within a ThemeProvider');
     }
 
     return theme;

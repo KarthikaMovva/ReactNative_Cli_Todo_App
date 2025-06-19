@@ -1,5 +1,5 @@
-import { Task } from "./Redux";
-import { GestureResponderEvent, TextStyle } from "react-native";
+import { Task } from './Redux';
+import { GestureResponderEvent, TextStyle } from 'react-native';
 
 export interface TaskListProps {
   tasks: Task[];
@@ -64,7 +64,7 @@ export interface SwitchTextProps {
 
 export interface TitleProps {
   heading: string;
-  style?: TextStyle; 
+  style?: TextStyle;
   onPress?: () => void;
 }
 

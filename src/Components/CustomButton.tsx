@@ -1,25 +1,28 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { CustomButtonProps } from '../Types/Props';
-import Colors from '../Utilities/Colors';
+import { ThemeContext } from '../Auth/ThemeContext';
+import { AppColorsType } from '../Utilities/Colors';
 
 const CustomButton: React.FC<CustomButtonProps> = ({ text, onPress }) => {
+const { requiredColors } = ThemeContext();
   return (
-    <TouchableOpacity style={styles.button} onPress={onPress}>
-      <Text style={styles.buttonText}>{text}</Text>
+    <TouchableOpacity style={styles(requiredColors).button} onPress={onPress}>
+      <Text style={styles(requiredColors).buttonText}>{text}</Text>
     </TouchableOpacity>
   );
 };
 
-const styles = StyleSheet.create({
+const styles = (requiredColors:AppColorsType)=>StyleSheet.create({
   button: {
-    backgroundColor: Colors.primaryButton,
-    padding: 15,
-    borderRadius: 10,
+    backgroundColor: requiredColors.brightBlue,
+    padding: 12,
+    borderRadius: 8,
     alignItems: 'center',
+    marginVertical : 15,
   },
   buttonText: {
-    color: Colors.background,
+    color: requiredColors.background,
     fontSize: 16,
     fontWeight: 'bold',
   },

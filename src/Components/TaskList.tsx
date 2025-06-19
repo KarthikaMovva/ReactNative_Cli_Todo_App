@@ -3,43 +3,43 @@ import { Text, FlatList, TouchableOpacity, View, StyleSheet } from 'react-native
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { TaskListProps } from '../Types/Props';
 import { Task }  from '../Types/Redux';
-import Colors from '../Utilities/Colors';
-import { getStatusColor } from '../Utilities/StatusAndColors';
+import { AppColorsType } from '../Utilities/Colors';
+import { getStatusColor } from '../Utilities/Utilities';
 import { ThemeContext } from '../Auth/ThemeContext';
 
 const TaskList: React.FC<TaskListProps> = ({ tasks, onTaskPress, onDeletePress, onEndReached }) => {
 
-  const { isDarkTheme } = ThemeContext();
+  const { requiredColors } = ThemeContext();
 
   const renderItem = ({ item }: { item: Task }) => (
     <TouchableOpacity
-      style={[styles(isDarkTheme).taskItem, { backgroundColor: getStatusColor(isDarkTheme,item.status) }]}
+      style={[styles(requiredColors).taskItem, { backgroundColor: getStatusColor(requiredColors,item.status) }]}
       onPress={() => onTaskPress(item)}
       activeOpacity={0.8}
     >
       <View>
-        <Text style={styles(isDarkTheme).taskTitle}>{item.title}</Text>
-        <Text style={styles(isDarkTheme).taskDescription}>{item.description}</Text>
-        <Text style={styles(isDarkTheme).taskStatus}>Status: {item.status}</Text>
+        <Text style={styles(requiredColors).taskTitle}>{item.title}</Text>
+        <Text style={styles(requiredColors).taskDescription}>{item.description}</Text>
+        <Text style={styles(requiredColors).taskStatus}>Status: {item.status}</Text>
       </View>
       <TouchableOpacity
-        style={styles(isDarkTheme).deleteIcon}
+        style={styles(requiredColors).deleteIcon}
         onPress={() => onDeletePress(item)}
       >
-        <Icon name="delete" size={25} color={isDarkTheme? Colors.loginBackground: Colors.deleteIconColor} />
+        <Icon name="delete" size={25} color={requiredColors.darkText} />
       </TouchableOpacity>
     </TouchableOpacity>
   );
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={styles(requiredColors).container}>
       <FlatList
         data={tasks}
         keyExtractor={item => item.id}
         renderItem={renderItem}
-        ListEmptyComponent={<Text style={styles(isDarkTheme).emptyText}>No tasks found.</Text>}
+        ListEmptyComponent={<Text style={styles(requiredColors).emptyText}>No tasks found.</Text>}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={tasks.length === 0 ? styles(isDarkTheme).emptyContainer : undefined}
+        contentContainerStyle={tasks.length === 0 ? styles(requiredColors).emptyContainer : undefined}
         onEndReached={onEndReached}
         onEndReachedThreshold={0.5}
       />
@@ -48,7 +48,10 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, onTaskPress, onDeletePress, 
 };
 
 
-const styles = (isDarkTheme:boolean)=>StyleSheet.create({
+const styles = (requiredColors:AppColorsType)=>StyleSheet.create({
+  container:{
+    flex : 1,
+  },
   taskItem: {
     padding: 15,
     marginVertical: 8,
@@ -58,17 +61,17 @@ const styles = (isDarkTheme:boolean)=>StyleSheet.create({
   taskTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: isDarkTheme? Colors.loginBackground: Colors.darkText,
+    color: requiredColors.darkText,
   },
   taskDescription: {
     marginVertical: 5,
     fontSize: 14,
-    color: isDarkTheme? Colors.loginBackground: Colors.darkText,
+    color: requiredColors.darkText,
   },
   taskStatus: {
     marginVertical: 5,
     fontSize: 13,
-    color: isDarkTheme? Colors.loginBackground: Colors.mediumText,
+    color: requiredColors.mediumText,
   },
   deleteIcon: {
     position: 'absolute',
@@ -80,7 +83,7 @@ const styles = (isDarkTheme:boolean)=>StyleSheet.create({
     textAlign: 'center',
     marginVertical: 30,
     fontSize: 16,
-    color: isDarkTheme? Colors.loginBackground: Colors.lightText,
+    color: requiredColors.lightText,
   },
   emptyContainer: {
     flexGrow: 1,

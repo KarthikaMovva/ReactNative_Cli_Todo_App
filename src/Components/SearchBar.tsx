@@ -1,35 +1,37 @@
 import React from 'react';
 import { TextInput, StyleSheet, View } from 'react-native';
 import { SearchBarProps } from '../Types/Props';
-import Colors from '../Utilities/Colors';
+import { AppColorsType } from '../Utilities/Colors';
 import { ThemeContext } from '../Auth/ThemeContext';
 
 const SearchBar: React.FC<SearchBarProps> = ({ value, onChangeText, placeholder = 'Search...' }) => {
-  const { isDarkTheme } = ThemeContext();
+  const { requiredColors } = ThemeContext();
 
   return (
-    <View style={styles(isDarkTheme).container}>
+    <View style={styles(requiredColors).container}>
       <TextInput
-        style={styles(isDarkTheme).input}
+        style={styles(requiredColors).input}
         placeholder={placeholder}
         value={value}
         onChangeText={onChangeText}
-        placeholderTextColor={isDarkTheme? Colors.loginBackground: Colors.mediumText}
+        placeholderTextColor={requiredColors.darkText}
       />
     </View>
   );
 };
 
-const styles = (isDarkTheme:boolean) => StyleSheet.create({
+const styles = (requiredColors:AppColorsType) => StyleSheet.create({
   container: {
     paddingVertical: 5,
   },
   input: {
-    backgroundColor: isDarkTheme? Colors.darkTheme.cardsBackground: Colors.lightGray,
+    backgroundColor: requiredColors.MovieCardBackground,
     padding: 10,
     borderRadius: 10,
     fontSize: 16,
-    color: isDarkTheme? Colors.loginBackground: Colors.darkText,
+    color: requiredColors.darkText,
+    borderWidth : 1,
+    borderColor: requiredColors.lightGray,
   },
 });
 

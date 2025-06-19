@@ -8,16 +8,15 @@ import {
 import { useDispatch } from 'react-redux';
 import { logoutUser } from '../Redux/UserSlice';
 import { ThemeContext } from '../Auth/ThemeContext';
-import Colors from '../Utilities/Colors';
+import { AppColorsType } from '../Utilities/Colors';
 import { StyleSheet } from 'react-native';
 
 const DrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
   const dispatch = useDispatch();
-  const { isDarkTheme, setisDarkTheme } = ThemeContext();
+  const { requiredColors } = ThemeContext();
 
   const handleLogout = () => {
     dispatch(logoutUser());
-    setisDarkTheme(false);
     console.log('logout clicked');
   };
 
@@ -27,20 +26,20 @@ const DrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
       <DrawerItem
         label="Logout"
         onPress={handleLogout}
-        labelStyle={styles(isDarkTheme).drawerstyles}
+        labelStyle={styles(requiredColors).DrawerStyles}
       />
     </DrawerContentScrollView>
   );
 };
 
-const styles = (isDarkTheme: boolean) => StyleSheet.create({
-  drawerstyles: {
-    color: isDarkTheme ? "white" : "red",
-    backgroundColor: isDarkTheme ? Colors.darkTheme.logout : Colors.background,
+const styles = (requiredColors: AppColorsType) => StyleSheet.create({
+  DrawerStyles: {
+    color: requiredColors.dangerButton,
+    backgroundColor: requiredColors.logoutBackground,
     height: 40,
     borderRadius: 20,
-    padding: 10
-  }
-})
+    padding: 10,
+  },
+});
 
 export default DrawerContent;
