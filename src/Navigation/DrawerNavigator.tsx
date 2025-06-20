@@ -3,14 +3,14 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import TabNavigator from './TabNavigator';
 import { RootDrawerParamList } from '../Types/Navigation';
 import DrawerContent from './DrawerContent'; 
-import { ThemeContext } from '../Auth/ThemeContext';
+import { useThemeContext } from '../Auth/ThemeContext';
 import { StyleSheet } from 'react-native';
 import { AppColorsType } from '../Utilities/Colors';
 
 const Drawer = createDrawerNavigator<RootDrawerParamList>();
 
 const DrawerNavigator = () => {
-  const {requiredColors} = ThemeContext();
+  const {requiredColors} = useThemeContext();
   return (
     <Drawer.Navigator
       drawerContent={(props) => <DrawerContent {...props} />}

@@ -2,10 +2,10 @@ import React from 'react';
 import { Text, StyleSheet, View } from 'react-native';
 import { TitleProps } from '../Types/Props';
 import { AppColorsType } from '../Utilities/Colors';
-import { ThemeContext } from '../Auth/ThemeContext';
+import { useThemeContext } from '../Auth/ThemeContext';
 
 const Title: React.FC<TitleProps> = ({ heading, style, onPress }) => {
-  const { requiredColors } = ThemeContext();
+  const { requiredColors } = useThemeContext();
 
   return (
     <View>

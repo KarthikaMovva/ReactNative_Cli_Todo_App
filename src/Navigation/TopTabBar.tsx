@@ -2,13 +2,13 @@ import React from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import MovieScreen from '../Screens/MovieScreen';
 import PeopleScreen from '../Screens/PeopleScreen';
-import { ThemeContext } from '../Auth/ThemeContext';
+import { useThemeContext } from '../Auth/ThemeContext';
 
 const TopTab = createMaterialTopTabNavigator();
 
 const TopTabNavigator = () => {
 
-const { requiredColors } = ThemeContext();
+const { requiredColors } = useThemeContext();
   return (
     <TopTab.Navigator
       screenOptions={{

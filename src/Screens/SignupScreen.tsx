@@ -17,14 +17,14 @@ import { isValidEmail } from '../Utilities/Utilities';
 import { AppColorsType } from '../Utilities/Colors';
 import { useContextValues } from '../Auth/ModalContext';
 import { Endpoints } from '../Network/Endpoints';
-import { ThemeContext } from '../Auth/ThemeContext';
+import { useThemeContext } from '../Auth/ThemeContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Signup'>;
 
 const SignupScreen: React.FC<Props> = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { requiredColors } = ThemeContext();
+  const { requiredColors } = useThemeContext();
   const dispatch = useDispatch();
   const users = useSelector((state: RootState) => state.users.users);
   const theme = useSelector((state: RootState) => state.users.currentUser?.theme);

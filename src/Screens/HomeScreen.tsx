@@ -7,7 +7,7 @@ import { updateTask, deleteTask } from '../Redux/TaskSlice';
 import { Task } from '../Types/Redux';
 import { AppColorsType } from '../Utilities/Colors';
 import { useContextValues } from '../Auth/ModalContext';
-import { ThemeContext } from '../Auth/ThemeContext';
+import { useThemeContext } from '../Auth/ThemeContext';
 
 import SearchBar from '../Components/SearchBar';
 import TaskList from '../Components/TaskList';
@@ -22,7 +22,7 @@ const HomeScreen: React.FC = () => {
     setIsConfirm,
     setOnConfirm,
   } = useContextValues();
-  const { requiredColors } = ThemeContext();
+  const { requiredColors } = useThemeContext();
 
   const [search, setSearch] = useState('');
   const [modalVisible, setModalVisible] = useState(false);

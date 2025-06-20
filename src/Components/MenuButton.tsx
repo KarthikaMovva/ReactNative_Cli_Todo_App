@@ -4,13 +4,13 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { RootDrawerParamList } from '../Types/Navigation';
-import { ThemeContext } from '../Auth/ThemeContext';
+import { useThemeContext } from '../Auth/ThemeContext';
 
 type DrawerNav = DrawerNavigationProp<RootDrawerParamList>;
 
 const MenuButton = () => {
   const navigation = useNavigation<DrawerNav>();
-  const { requiredColors } = ThemeContext();
+  const { requiredColors } = useThemeContext();
 
   return (
     <TouchableOpacity onPress={() => navigation.openDrawer()}>

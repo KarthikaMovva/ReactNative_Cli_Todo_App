@@ -9,12 +9,12 @@ import { getTabBarIcon } from '../Utilities/Utilities';
 import MenuButton from '../Components/MenuButton';
 import TopTabNavigator from './TopTabBar';
 import { AppColorsType } from '../Utilities/Colors';
-import { ThemeContext } from '../Auth/ThemeContext';
+import { useThemeContext } from '../Auth/ThemeContext';
 
 const Tab = createBottomTabNavigator<TabParamList>();
 
 const TabNavigator = () => {
-  const { requiredColors } = ThemeContext();
+  const { requiredColors } = useThemeContext();
   const statusBarBarStyle = requiredColors ? 'light-content' : 'dark-content';
   const statusBarBackgroundColor = requiredColors.MovieCardBackground;
 

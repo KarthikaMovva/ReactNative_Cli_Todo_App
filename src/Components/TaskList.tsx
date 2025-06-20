@@ -5,11 +5,11 @@ import { TaskListProps } from '../Types/Props';
 import { Task }  from '../Types/Redux';
 import { AppColorsType } from '../Utilities/Colors';
 import { getStatusColor } from '../Utilities/Utilities';
-import { ThemeContext } from '../Auth/ThemeContext';
+import { useThemeContext } from '../Auth/ThemeContext';
 
 const TaskList: React.FC<TaskListProps> = ({ tasks, onTaskPress, onDeletePress, onEndReached }) => {
 
-  const { requiredColors } = ThemeContext();
+  const { requiredColors } = useThemeContext();
 
   const renderItem = ({ item }: { item: Task }) => (
     <TouchableOpacity

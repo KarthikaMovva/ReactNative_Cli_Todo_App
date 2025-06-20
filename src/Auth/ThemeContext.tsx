@@ -22,12 +22,11 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     );
 };
 
-export const ThemeContext = (): ThemeContextType => {
-    const theme = useContext(GlobalTheme);
-
-    if (theme === undefined) {
-        throw new Error('useThemeContext must be used within a ThemeProvider');
-    }
-
-    return theme;
+export const useThemeContext = (): ThemeContextType => {
+  const theme = useContext(GlobalTheme);
+  if (!theme) {
+    throw new Error('useThemeContext must be used within a ThemeProvider');
+  }
+  return theme;
 };
+

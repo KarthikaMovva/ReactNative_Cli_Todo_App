@@ -2,10 +2,10 @@ import React from 'react';
 import { TextInput, StyleSheet, View } from 'react-native';
 import { SearchBarProps } from '../Types/Props';
 import { AppColorsType } from '../Utilities/Colors';
-import { ThemeContext } from '../Auth/ThemeContext';
+import { useThemeContext } from '../Auth/ThemeContext';
 
 const SearchBar: React.FC<SearchBarProps> = ({ value, onChangeText, placeholder = 'Search...' }) => {
-  const { requiredColors } = ThemeContext();
+  const { requiredColors } = useThemeContext();
 
   return (
     <View style={styles(requiredColors).container}>

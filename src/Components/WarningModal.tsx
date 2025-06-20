@@ -2,11 +2,11 @@ import React from 'react';
 import { Modal, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { WarningModalProps } from '../Types/Props';
 import { AppColorsType } from '../Utilities/Colors';
-import { ThemeContext } from '../Auth/ThemeContext';
+import { useThemeContext } from '../Auth/ThemeContext';
 
 const WarningModal: React.FC<WarningModalProps> = ({ visible, message, onClose, onConfirm }) => {
 
-  const { requiredColors } = ThemeContext();
+  const { requiredColors } = useThemeContext();
 
   return (
     <Modal visible={visible} transparent animationType="fade">

@@ -30,6 +30,14 @@ export interface ImageUploadProps{
   openGallery: ()=>void;
 }
 
+export interface ActivityIndicatorProps{
+  text : string;
+}
+
+export interface EmptyComponentProps{
+  text : string;
+}
+
 export interface SearchBarProps {
   value: string;
   onChangeText: (text: string) => void;

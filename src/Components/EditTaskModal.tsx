@@ -2,11 +2,11 @@ import React from 'react';
 import { Modal, TextInput, TouchableOpacity, Text, View, StyleSheet } from 'react-native';
 import { EditModalProps } from '../Types/Props';
 import StatusPicker from './StatusPicker';
-import { ThemeContext } from '../Auth/ThemeContext';
+import { useThemeContext } from '../Auth/ThemeContext';
 import { AppColorsType } from '../Utilities/Colors';
 
 const EditTaskModal: React.FC<EditModalProps> = ({ visible, task, onClose, onChange, onSave }) => {
-  const { requiredColors } = ThemeContext();
+  const { requiredColors } = useThemeContext();
   if (!task) { return null; }
 
   return (

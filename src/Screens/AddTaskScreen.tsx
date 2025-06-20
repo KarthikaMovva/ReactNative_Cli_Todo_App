@@ -11,7 +11,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../Types/Navigation';
 import { useNavigation } from '@react-navigation/native';
 import { useContextValues } from '../Auth/ModalContext';
-import { ThemeContext } from '../Auth/ThemeContext';
+import { useThemeContext } from '../Auth/ThemeContext';
 
 const AddTaskScreen = () => {
   const [title, setTitle] = useState('');
@@ -19,7 +19,7 @@ const AddTaskScreen = () => {
   const [status, setStatus] = useState('pending');
   const currentUserEmail = useSelector((state: RootState) => state.users.currentUser);
   const { setShowWarning, setWarningMessage, setIsConfirm } = useContextValues();
-  const { requiredColors } = ThemeContext();
+  const { requiredColors } = useThemeContext();
   const dispatch = useDispatch();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 

@@ -15,14 +15,14 @@ import CustomButton from '../Components/CustomButton';
 import axiosInstance from '../Network/AxiosInstance';
 import { Endpoints } from '../Network/Endpoints';
 import { useContextValues } from '../Auth/ModalContext';
-import { ThemeContext } from '../Auth/ThemeContext';
+import { useThemeContext } from '../Auth/ThemeContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
 const LoginScreen: React.FC<Props> = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { requiredColors } = ThemeContext();
+  const { requiredColors } = useThemeContext();
   const dispatch = useDispatch();
   const users = useSelector((state: RootState) => state.users.users);
 

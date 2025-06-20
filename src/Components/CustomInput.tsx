@@ -2,7 +2,7 @@ import React from 'react';
 import { TextInput, StyleSheet } from 'react-native';
 import { AppColorsType } from '../Utilities/Colors';
 import { CustomInputProps } from '../Types/Props';
-import { ThemeContext } from '../Auth/ThemeContext';
+import { useThemeContext } from '../Auth/ThemeContext';
 
 const CustomInput: React.FC<CustomInputProps> = ({
   value,
@@ -11,7 +11,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
   secureTextEntry = false,
   ...rest
 }) => {
-  const { requiredColors } = ThemeContext();
+  const { requiredColors } = useThemeContext();
   return (
     <TextInput
       style={styles(requiredColors).input}

@@ -4,20 +4,20 @@ import {
   View,
   Text,
   StyleSheet,
-  ActivityIndicator,
   Image,
 } from 'react-native';
 import axiosInstance from '../Network/AxiosInstance';
-import { Movie } from '../Types/MovieList';
+import { Movie } from '../Types/Movie';
 import SearchBar from '../Components/SearchBar';
 import { AppColorsType } from '../Utilities/Colors';
 import { useDebounce } from '../CustomHook/useDebounce';
-import { ThemeContext } from '../Auth/ThemeContext';
+import { useThemeContext } from '../Auth/ThemeContext';
 import { Endpoints } from '../Network/Endpoints';
+import EmptyComponent from '../Components/EmptyComponent';
+import LoadingIndicator from '../Components/LoadingIndicator';
 
 const MoviesScreen: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [search, setSearch] = useState<string>('');
@@ -25,23 +25,9 @@ const MoviesScreen: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const debouncedSearch = useDebounce<string>(search, 300);
-  const { requiredColors } = ThemeContext();
+  const { requiredColors } = useThemeContext();
 
-const onRefresh = useCallback(() => {
-  if (debouncedSearch.trim() === '') {
-    setRefreshing(true);
-    setMovies([]);
-    fetchTopRatedMovies(1);
-  }
-},[fetchTopRatedMovies]);
-
-useEffect(()=>{
-  if(debouncedSearch.trim()){
-    fetchSearchedMovies(debouncedSearch);
-  }
-},[debouncedSearch])
-
-   const fetchTopRatedMovies = useCallback(
+  const fetchTopRatedMovies = useCallback(
     async (pageNum: number) => {
       try {
         const response = await axiosInstance.get(Endpoints.movies, {
@@ -52,51 +38,71 @@ useEffect(()=>{
         const totalPages = response.data.total_pages;
 
         setMovies((prevMovies) => {
-        const combined = [...prevMovies, ...fetchedMovies];
-        return combined.sort((a, b) => b.vote_average - a.vote_average);
-      });
+          const combined = [...prevMovies, ...fetchedMovies];
+          return combined.sort((a, b) => b.vote_average - a.vote_average);
+        });
+        console.log(response, 'from movies Screen');
         setHasMore(pageNum < totalPages);
-        console.log(hasMore,'hasMore inside function');
+        setLength(movies.length);
       } catch (error) {
         console.error('Error fetching movies:', error);
-      }finally{
+      } finally {
         setLoading(false);
         setRefreshing(false);
       }
-    },[hasMore]);
+    }, []);
 
   const fetchSearchedMovies = useCallback(
-  async (query: string) => {
-    try {
-      const response = await axiosInstance.get(Endpoints.search, {
-        params: { query },
-      });
+    async (query: string) => {
+      try {
+        const response = await axiosInstance.get(Endpoints.search, {
+          params: { query },
+        });
 
-      const results: Movie[] = response.data.results;
-      const sortedResults = results.sort((a, b) => b.vote_average - a.vote_average);
-      setMovies(sortedResults);
-      setHasMore(false);
-      setLength(movies.length);
-    } catch (error) {
-      console.error('Error searching movies:', error);
+        const results: Movie[] = response.data.results;
+        const sortedResults = results.sort((a, b) => b.vote_average - a.vote_average);
+        setMovies(sortedResults);
+        setHasMore(false);
+        setLength(movies.length);
+      } catch (error) {
+        console.error('Error searching movies:', error);
+      }
+    },
+    []
+  );
+
+ useEffect(() => {
+    fetchTopRatedMovies(1);
+  }, [fetchTopRatedMovies]);
+
+  useEffect(() => {
+    if (debouncedSearch.trim()) {
+      fetchSearchedMovies(debouncedSearch);
     }
-  },
-  []
-);
+  }, [debouncedSearch,fetchSearchedMovies]);
 
-const handleEndReached = useCallback(() => {
-  if (hasMore && debouncedSearch.trim() === '') {
-    setPage((prevPage) => {
-      const nextPage = prevPage + 1;
-      fetchTopRatedMovies(nextPage);
-      return nextPage;
-    });
-  }
-}, [hasMore, debouncedSearch, fetchTopRatedMovies]);
+  const onRefresh = useCallback(() => {
+    if (debouncedSearch.trim() === '') {
+      setRefreshing(true);
+      setMovies([]);
+      fetchTopRatedMovies(1);
+    }
+  }, [fetchTopRatedMovies,debouncedSearch]);
 
-const handleChange = (text: string) => {
-  setSearch(text);
-};
+
+  const handleEndReached = useCallback(() => {
+    if (hasMore && debouncedSearch.trim() === '') {
+      setPage((prevPage) => {
+        const nextPage = prevPage + 1;
+        fetchTopRatedMovies(nextPage);
+        return nextPage;
+      });
+    }
+  }, [hasMore, debouncedSearch, fetchTopRatedMovies]);
+
+  const handleChange = (text: string) => {
+    setSearch(text);
+  };
 
   const renderItem = ({ item }: { item: Movie }) => (
     <View style={styles(requiredColors).card}>
@@ -119,23 +125,6 @@ const handleChange = (text: string) => {
     </View>
   );
 
-  const renderFooter = () => (
-    loading || movies.length < length ? (
-      <View style={styles(requiredColors).footer}>
-        <ActivityIndicator size="large" color="#007bff" />
-        <Text style={styles(requiredColors).footerText}>Loading more movies...</Text>
-      </View>
-    ) : null
-  );
-
-  const renderEmptyComponent = () => {
-    return(
-    <View style={styles(requiredColors).footer}>
-      <Text style={styles(requiredColors).footerText}>No movies found</Text>
-    </View>
-    );
-  };
-
   return (
     <View style={styles(requiredColors).container}>
       <SearchBar value={search} onChangeText={handleChange} placeholder="Search movies..." />
@@ -146,8 +135,8 @@ const handleChange = (text: string) => {
         contentContainerStyle={styles(requiredColors).content}
         onEndReached={handleEndReached}
         onEndReachedThreshold={0.4}
-        ListFooterComponent={renderFooter}
-        ListEmptyComponent={renderEmptyComponent}
+        ListFooterComponent={loading || movies.length < length ? <LoadingIndicator text="Loading more movies..."/> : null}
+        ListEmptyComponent={<EmptyComponent text="No movies found"/>}
         refreshing={refreshing}
         onRefresh={onRefresh}
       />
@@ -155,21 +144,21 @@ const handleChange = (text: string) => {
   );
 };
 
-const styles = (requiredColors:AppColorsType) => StyleSheet.create({
+const styles = (requiredColors: AppColorsType) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: requiredColors.background,
-    padding : 10,
+    padding: 5,
   },
   content: {
-    padding: 10,
-    paddingBottom: 30,
+    padding: 5,
+    paddingVertical: 3,
   },
   card: {
     flexDirection: 'row',
     backgroundColor: requiredColors.MovieCardBackground,
-    borderWidth:1,
-    borderColor : requiredColors.lightGray,
+    borderWidth: 1,
+    borderColor: requiredColors.lightGray,
     borderRadius: 12,
     marginVertical: 8,
     padding: 15,

@@ -7,10 +7,10 @@ import { AppColorsType } from '../Utilities/Colors';
 import ImageUploadModal from '../Components/ImageUploadModal';
 import { setProfileImage, setTheme } from '../Redux/UserSlice';
 import ImagePicker from 'react-native-image-crop-picker';
-import { ThemeContext } from '../Auth/ThemeContext';
+import { useThemeContext } from '../Auth/ThemeContext';
 
 const SettingsScreen = () => {
-  const { requiredColors } = ThemeContext();
+  const { requiredColors } = useThemeContext();
   const dispatch = useDispatch();
   const image = useSelector((state: RootState) => state.users.currentUser?.profileImage);
   const isDarkTheme = useSelector((state: RootState) => state.users.currentUser?.theme);

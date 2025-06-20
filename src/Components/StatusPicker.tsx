@@ -12,11 +12,11 @@ import { AppColorsType } from '../Utilities/Colors';
 import { StatusPickerProps } from '../Types/Props';
 import { TaskStatus } from '../Utilities/Utilities';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { ThemeContext } from '../Auth/ThemeContext';
+import { useThemeContext } from '../Auth/ThemeContext';
 
 const StatusPicker: React.FC<StatusPickerProps> = ({ selectedValue, onValueChange }) => {
   const [modalVisible, setModalVisible] = useState(false);
-  const { requiredColors } = ThemeContext();
+  const { requiredColors } = useThemeContext();
 
   const handleSelect = (value: string) => {
     onValueChange(value);

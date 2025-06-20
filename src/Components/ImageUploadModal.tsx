@@ -2,11 +2,11 @@ import { Modal, StyleSheet, View, TouchableOpacity, Text } from 'react-native';
 import { AppColorsType } from '../Utilities/Colors';
 import Title from './Title';
 import { ImageUploadProps } from '../Types/Props';
-import { ThemeContext } from '../Auth/ThemeContext';
+import { useThemeContext } from '../Auth/ThemeContext';
 
 const ImageUploadModal:React.FC<ImageUploadProps> = ({visible, openCamera, openGallery, onClose}) => {
 
-    const { requiredColors } = ThemeContext();
+    const { requiredColors } = useThemeContext();
 
     return(
        <Modal visible={visible} animationType="slide" transparent={true}>

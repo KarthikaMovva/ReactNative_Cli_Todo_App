@@ -15,3 +15,8 @@ export interface MovieListProps {
   onRefresh: () => void;
   loading: boolean;
 }
+
+export interface MovieApiResponse {
+    results: Movie[];
+    total_pages: number;
+}
