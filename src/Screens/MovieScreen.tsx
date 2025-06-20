@@ -6,7 +6,7 @@ import {
   StyleSheet,
   Image,
 } from 'react-native';
-import axiosInstance from '../Network/AxiosInstance';
+import { searchAndSort } from '../Network/searchAndSort';
 import { Movie } from '../Types/Movie';
 import SearchBar from '../Components/SearchBar';
 import { AppColorsType } from '../Utilities/Colors';
@@ -15,79 +15,75 @@ import { useThemeContext } from '../Auth/ThemeContext';
 import { Endpoints } from '../Network/Endpoints';
 import EmptyComponent from '../Components/EmptyComponent';
 import LoadingIndicator from '../Components/LoadingIndicator';
+import { fetchAndSort } from '../Network/FetchAndSort';
 
 const MoviesScreen: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [search, setSearch] = useState<string>('');
-  const [length, setLength] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const debouncedSearch = useDebounce<string>(search, 300);
   const { requiredColors } = useThemeContext();
 
-  const fetchTopRatedMovies = useCallback(
-    async (pageNum: number) => {
-      try {
-        const response = await axiosInstance.get(Endpoints.movies, {
-          params: { page: pageNum },
+  const fetchTopRatedMovies = useCallback(async (pageNum: number) => {
+    await fetchAndSort<Movie>({
+      endpoint: Endpoints.movies,
+      page: pageNum,
+      sortKey: 'vote_average',
+      sortOrder: 'desc',
+      onSuccess: (sortedMovies) => {
+        setMovies((prev) => {
+          const combined = [...prev, ...sortedMovies];
+          const unique = Array.from(new Map(combined.map(m => [m.id, m])).values());
+          return unique;
         });
-
-        const fetchedMovies: Movie[] = response.data.results;
-        const totalPages = response.data.total_pages;
-
-        setMovies((prevMovies) => {
-          const combined = [...prevMovies, ...fetchedMovies];
-          return combined.sort((a, b) => b.vote_average - a.vote_average);
-        });
-        console.log(response, 'from movies Screen');
-        setHasMore(pageNum < totalPages);
-        setLength(movies.length);
-      } catch (error) {
-        console.error('Error fetching movies:', error);
-      } finally {
+      },
+      onError: (err) => console.error('Failed to fetch:', err),
+      onComplete: () => {
         setLoading(false);
         setRefreshing(false);
-      }
-    }, []);
+      },
+      getTotalPages: (data) => {
+        setHasMore(pageNum < data.total_pages);
+        return data.total_pages;
+      },
+    });
+  }, []);
 
-  const fetchSearchedMovies = useCallback(
-    async (query: string) => {
-      try {
-        const response = await axiosInstance.get(Endpoints.search, {
-          params: { query },
-        });
 
-        const results: Movie[] = response.data.results;
-        const sortedResults = results.sort((a, b) => b.vote_average - a.vote_average);
+  const fetchSearchedMovies = useCallback((query: string) => {
+    searchAndSort<Movie>({
+      endpoint: Endpoints.search,
+      query,
+      sortKey: 'vote_average',
+      onSuccess: (sortedResults) => {
         setMovies(sortedResults);
         setHasMore(false);
-        setLength(movies.length);
-      } catch (error) {
-        console.error('Error searching movies:', error);
-      }
-    },
-    []
-  );
+      },
+    });
+  }, []);
 
- useEffect(() => {
+  useEffect(() => {
     fetchTopRatedMovies(1);
   }, [fetchTopRatedMovies]);
 
   useEffect(() => {
     if (debouncedSearch.trim()) {
+      setPage(1);
       fetchSearchedMovies(debouncedSearch);
     }
-  }, [debouncedSearch,fetchSearchedMovies]);
+  }, [debouncedSearch, fetchSearchedMovies]);
 
   const onRefresh = useCallback(() => {
     if (debouncedSearch.trim() === '') {
       setRefreshing(true);
       setMovies([]);
+      setPage(1);
       fetchTopRatedMovies(1);
     }
-  }, [fetchTopRatedMovies,debouncedSearch]);
+  }, [fetchTopRatedMovies, debouncedSearch]);
 
 
   const handleEndReached = useCallback(() => {
@@ -135,8 +131,8 @@ const MoviesScreen: React.FC = () => {
         contentContainerStyle={styles(requiredColors).content}
         onEndReached={handleEndReached}
         onEndReachedThreshold={0.4}
-        ListFooterComponent={loading || movies.length < length ? <LoadingIndicator text="Loading more movies..."/> : null}
-        ListEmptyComponent={<EmptyComponent text="No movies found"/>}
+        ListFooterComponent={loading && !refreshing ? <LoadingIndicator text="Loading more movies..." /> : null}
+        ListEmptyComponent={<EmptyComponent text="No movies found" />}
         refreshing={refreshing}
         onRefresh={onRefresh}
       />

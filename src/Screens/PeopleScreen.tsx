@@ -1,7 +1,7 @@
 import { StyleSheet, View, FlatList } from 'react-native';
 import { AppColorsType } from '../Utilities/Colors';
 import { useCallback, useState, useEffect } from 'react';
-import axiosInstance from '../Network/AxiosInstance';
+import { searchAndSort } from '../Network/searchAndSort';
 import { Endpoints } from '../Network/Endpoints';
 import RenderItem from '../Components/RenderItem';
 import SearchBar from '../Components/SearchBar';
@@ -9,6 +9,7 @@ import { useDebounce } from '../CustomHook/useDebounce';
 import { useThemeContext } from '../Auth/ThemeContext';
 import { Result } from '../Types/People';
 import LoadingIndicator from '../Components/LoadingIndicator';
+import { fetchAndSort } from '../Network/FetchAndSort';
 import EmptyComponent from '../Components/EmptyComponent';
 
 const PeopleScreen = () => {
@@ -22,59 +23,48 @@ const PeopleScreen = () => {
   const [page, setPage] = useState<number>(1);
   const [hasMore, setHasMore] = useState(true);
 
-
-  const fetchPeople = useCallback(async (pageNumber: number) => {
-    try {
-      const response = await axiosInstance.get(Endpoints.people, {
-        params: { page: pageNumber },
-      });
-      const fetchedData: Result[] = response.data.results;
-      const totalPages = response.data.total_pages;
-      setPeople((prev) => {
-        const existingIds = new Set(prev.map((eachPerson) => eachPerson.id));
-
-        const newUniqueMovies = fetchedData.filter(
-          (person) => !existingIds.has(person.id)
-        );
-
-        const combined = [...prev, ...newUniqueMovies];
-
-        return combined.sort((a, b) => b.popularity - a.popularity);
-      });
-
-      setHasMore(pageNumber < totalPages);
-      console.log(response, 'from PeopleScreen');
-      setLength(people.length);
-    } catch (error) {
-      console.error('Error from PeopleScreen', error);
-    }
-    finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
+  const fetchPeople = useCallback(async (pageNum: number) => {
+    await fetchAndSort<Result>({
+      endpoint: Endpoints.people,
+      page: pageNum,
+      sortKey: 'popularity',
+      sortOrder: 'desc',
+      onSuccess: (sortedPeople) => {
+        setPeople((prev) => {
+          const combined = [...prev, ...sortedPeople];
+          const unique = Array.from(new Map(combined.map(m => [m.id, m])).values());
+          return unique;
+        });
+      },
+      onError: (err) => console.error('Failed to fetch:', err),
+      onComplete: () => {
+        setLoading(false);
+        setRefreshing(false);
+      },
+      getTotalPages: (data) => {
+        setHasMore(pageNum < data.total_pages);
+        return data.total_pages;
+      },
+    });
   }, []);
 
-  const fetchSearchedPeople = useCallback(
-    async (query: string) => {
-      try {
-        const response = await axiosInstance.get(Endpoints.searchPeople, {
-          params: { query },
-        });
 
-        const results: Result[] = response.data.results;
-        const sortedResults = results.sort((a, b) => b.popularity - a.popularity);
+  const fetchSearchedPeople = useCallback((query: string) => {
+    searchAndSort<Result>({
+      endpoint: Endpoints.searchPeople,
+      query,
+      sortKey: 'popularity',
+      onSuccess: (sortedResults) => {
         setPeople(sortedResults);
         setHasMore(false);
-        setLength(people.length);
-      } catch (error) {
-        console.error('Error searching people:', error);
-      }
-    },
-    []
-  );
+      },
+    });
+  }, []);
+
 
   useEffect(() => {
     if (debouncedSearch.trim()) {
+      setPage(1);
       fetchSearchedPeople(debouncedSearch);
     }
   }, [debouncedSearch, fetchSearchedPeople]);
@@ -97,6 +87,7 @@ const PeopleScreen = () => {
     if (debouncedSearch.trim() === '') {
       setRefreshing(true);
       setPeople([]);
+      setPage(1);
       fetchPeople(1);
     }
   }, [fetchPeople, debouncedSearch]);
